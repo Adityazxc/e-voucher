@@ -1,191 +1,120 @@
-<!DOCTYPE html>
-<html lang="en">
+<!-- script untuk no urut -->
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 
-<head>
+<form method="get" action="<?= base_url('ccc/view_add_data'); ?>">
+    <label for="dateFrom">From:</label>
+    <input type="date" id="dateFrom" name="dateFrom">
 
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
+    <label for="dateThru">Thru:</label>
+    <input type="date" id="dateThru" name="dateThru">
 
-    <title>SB Admin 2 - Dashboard Adit</title>
+    <button type="submit">Filter</button>
+</form>
 
-    <!-- Custom fonts for this template-->
-    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
-    <link rel="stylesheet" type="text/css"
-        href="<?php echo base_url('public/vendor/fontawesome-free/css/all.min.css'); ?>">
-    <link
-        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
-        rel="stylesheet">
-
-    <!-- Custom styles for this template-->
-    <link rel="stylesheet" type="text/css" href="<?php echo base_url('public/css/sb-admin-2.min.css'); ?>">
-
-    <!-- DataTable -->
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css" />
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap4.min.css" />
-
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script>
-    <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap4.min.js"></script>
-
-    <!-- Modal-->    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-
-</head>
-
-<body id="page-top">
-
-    <!-- Page Wrapper -->
-    <div id="wrapper">
-
-        <!-- Sidebar -->
-        <?php $this->load->view('widgets/sidebar'); ?>
-        <!-- End of Sidebar -->
-
-        <!-- Content Wrapper -->
-        <div id="content-wrapper" class="d-flex flex-column">
-
-            <!-- Main Content -->
-            <div id="content">
-
-                <!-- Topbar -->
-
-                <?php $this->load->view('widgets/topbar'); ?>
-                <!-- End of Topbar -->
-
-                <!-- Begin Page Content -->
-                <div class="container-fluid">
-
-                    <!-- Page Heading -->
-                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                        <h1 class="h3 mb-0 text-gray-800">Add Data</h1>
-                    </div>
-
-
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addCustomerModal">
-                        Add Customer
-                    </button>
-
-                    <button>import excel</button>
-
-                    <!-- Modal -->
-                    <?php $this->load->view('ccc_role/modal_add_data'); ?>
-
-                    <table id="voucherTable" class="table table-striped table-bordered" border="1">
-                        <thead>
-                            <tr>
-                                <th>No Urut</th>
-                                <th>Nama Pengirim</th>
-                                <th>Email</th>
-                                <th>No. Telepon</th>
-                                <th>Harga</th>
-                                <th>AWB no</th>
-                                <th>Service</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php $counter = 1; ?>
-                            <?php foreach ($voucher_data as $voucher): ?>
-                                <tr>
-                                    <td></td> <!-- No Urut column will be filled dynamically in JavaScript -->
-                                    <td>
-                                        <?php 
-                                        // echo $voucher->customer_name 
-                                        echo $voucher->id_customer 
-                                        ?>
-                                    </td>
-                                    <td>
-                                        <?php
-                                        //  echo $voucher->email;
-                                         echo $voucher->name;
-                                          ?>
-                                    </td>
-                                    <td>
-                                        <?php 
-                                        // echo $voucher->no_hp; 
-                                        echo $voucher->age; 
-                                        ?>
-                                    </td>
-                                    <td>
-                                        <?php 
-                                        // echo $voucher->harga; 
-                                        ?>
-                                    </td>
-                                    <td>
-                                        <?php 
-                                        // echo $voucher->awb_no; 
-                                        ?>
-                                    </td>
-                                    <td>
-                                        <?php 
-                                        // echo $voucher->service; 
-                                        ?>
-                                    </td>
-                                </tr>
-                                <?php $counter++; ?>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
-
-                    <script>
-                    $(document).ready(function() {
-                        // Initialize DataTable with options
-                        var table = $('#voucherTable').DataTable({
-                            "paging": true,
-                            "searching": true,
-                            "ordering": true,
-                            "info": true,
-                            "responsive": true
-                        });
-                        // Custom rendering for No Urut column
-                        table.on('order.dt search.dt', function() {
-                            table.column(0, {
-                                search: 'applied',
-                                order: 'applied'
-                            }).nodes().each(function(cell, i) {
-                                cell.innerHTML = i + 1;
-                            });
-                        }).draw();
-
-                    });
-                    </script>
-
-                </div>
-                <!--end Data Table  -->
-
-                <!-- /.container-fluid -->
-
-            </div>
-            <!-- End of Main Content -->
-
-            <!-- Footer -->
-            <footer class="sticky-footer bg-white">
-                <div class="container my-auto">
-                    <div class="copyright text-center my-auto">
-                        <span>Copyright &copy; Your Website 2021</span>
-                    </div>
-                </div>
-            </footer>
-            <!-- End of Footer -->
-
+<form action="<?php echo base_url('ccc/importData'); ?>" method="post" enctype="multipart/form-data">
+    <div class="row">
+        <div class="col-5 mb-4"><button type="button" class="btn btn-primary" data-toggle="modal"
+                data-target="#addCustomerModal">
+                Add Customer
+            </button></div>
+        <div class="col mb-4"><input type="file" class="form-control mx-2" name="excel_file" id="excel_file" required>
         </div>
-        <!-- End of Content Wrapper -->
-
+        <div class="col mb-4"><button type="submit" class="btn btn-primary mx-2">Import Data</button></div>
     </div>
-    <!-- End of Page Wrapper -->
-
-    <!-- Scroll to Top Button-->
-    <a class="scroll-to-top rounded" href="#page-top">
-        <i class="fas fa-angle-up"></i>
-    </a>
+</form>
 
 
+<!-- Modal -->
+<?php $this->load->view('ccc_role/modal_add_data'); ?>
+<!-- end Modal -->
+
+<div class="card shadow mb-4">
+
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Voucher Data</h6>
+    </div>
+    <div class="card-body">
+
+        <div class="table-responsive">
+            <table id="dataTable" class="table table-bordered" width="100%" border="1" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Nama Pengirim</th>
+                        <th>Email</th>
+                        <th>No Tlp</th>
+                        <th>Harga Ongkir</th>
+                        <th>AWB no</th>
+                        <th>Service</th>
+                        <th>E-Voucher</th>                        
+                        <th>Date</th>                        
+                    </tr>
+                </thead>
+                <tbody id="dataBody">
+                    <?php $counter = 1; ?>
+                    <?php foreach ($voucher_data as $voucher): ?>
+                        <tr>
+                            <td></td> <!-- No Urut column will be filled dynamically in JavaScript -->
+                            <td>
+                                <?php echo $voucher->customer_name ?>
+
+                            </td>
+                            <td>
+                                <?php echo $voucher->email; ?>
+                            </td>
+                            <td>
+                                <?php echo $voucher->no_hp; ?>
+
+                            </td>
+                            <td>
+                                <?php echo $voucher->harga; ?>
+                            </td>
+                            <td>
+                                <?php echo $voucher->awb_no; ?>
 
 
-</body>
+                            </td>
+                            <td>
+                                <?php echo $voucher->service; ?>
 
-</html>
+                            </td>
+                            <td>
+                                <?php echo $voucher->voucher; ?>
+
+                            </td>
+                            <td>
+                                <?php echo $voucher->date; ?>
+
+                            </td>
+                         
+                        </tr>
+                        <?php $counter++; ?>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        // Initialize DataTable with options
+        var table = $('#dataTable').DataTable({
+            "paging": true,
+            "searching": true,
+            "ordering": true,
+            "info": true,
+            "responsive": true
+        });
+        // Custom rendering for No Urut column
+        table.on('order.dt search.dt', function () {
+            table.column(0, {
+                search: 'applied',
+                order: 'applied'
+            }).nodes().each(function (cell, i) {
+                cell.innerHTML = i + 1;
+            });
+        }).draw();
+
+    });
+</script>

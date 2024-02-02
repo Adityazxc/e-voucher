@@ -3,13 +3,19 @@
 class Ccc_model extends CI_Model {
 
     // PCRF REGISTRATION
-    var $customer_column_order = array(null, 'id', 'date', 'awb_no', 'id_customer', 'customer_name', 'qty', 'weight', 'harga', 'email', 'no_hp', 'service', null); //set column field database for datatable orderable
-    var $customer_column_search = array('id', 'date', 'awb_no', 'id_customer', 'customer_name', 'qty', 'weight', 'harga', 'email', 'no_hp', 'service'); //set column field database for datatable searchable
+    var $customer_column_order = array(null, 'id', 'date', 'awb_no', 'customer_name', 'harga', 'email', 'no_hp', 'service', null); //set column field database for datatable orderable
+    var $customer_column_search = array('id', 'date', 'awb_no', 'customer_name', 'harga', 'email', 'no_hp', 'service'); //set column field database for datatable searchable
     var $customer_order = array('id' => 'DESC'); // default order
 
     private function _getdatatables_customer()
     {
         $this->db->select('*');
+        if($this->input->post('status') == 'status2'){
+            $this->db->where('status', 'Y');
+        }else if($this->input->post('status') == 'status3'){
+            $this->db->where('status', 'N');
+        }else if($this->input->post('status') == 'status4'){
+        }
         $this->db->from('customers');
         $i = 0;
         foreach ($this->customer_column_search as $item) { // loop column
@@ -53,8 +59,25 @@ class Ccc_model extends CI_Model {
     function count_all_customer()
     {
         $this->db->select('*');
+        if($this->input->post('status') == 'status2'){
+            $this->db->where('status', 'Y');
+        }else if($this->input->post('status') == 'status3'){
+            $this->db->where('status', 'N');
+        }else if($this->input->post('status') == 'status4'){
+        }
         $this->db->from('customers');
         return $this->db->count_all_results();
+    }
+
+    function tambah($data){
+        $this->db->insert('customers',$data);
+        return TRUE;
+    }
+
+    function summary_customer(){
+        $this->db->select('SUM(CASE WHEN status = "status1" THEN harga ELSE 0 END) as sum_status1');
+        $query = $this->db->get('customers');
+        return $query->row();
     }
 }
 ?>

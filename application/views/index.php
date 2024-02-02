@@ -9,65 +9,84 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title><?= $title?></title>
+    <title>SB Admin 2 - Login</title>
+    <link href="<?= base_url() ?>public/vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
+    <link href="<?= base_url() ?>public/css/sb-admin-2.min.css" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+        rel="stylesheet">
+    <!-- Custom fonts for this template-->
 
-    <?php include 'template/header.php' ?>
 
 </head>
 
-<body id="page-top">
+<body class="bg-gradient-primary">
 
-    <!-- Page Wrapper -->
-    <div id="wrapper">
+    <div class="container">
 
-        <!-- Sidebar -->
-        <?php include 'widgets/sidebar.php'?>
-        <!-- End of Sidebar -->
+        <!-- Outer Row -->
+        <div class="row justify-content-center">
 
-        <!-- Content Wrapper -->
-        <div id="content-wrapper" class="d-flex flex-column">
+            <div class="col-xl-10 ">
 
-            <!-- Main Content -->
-            <div id="content">
+                <div class="card o-hidden border-0 shadow-lg my-5">
+                    <div class="card-body p-0">
+                        <!-- Nested Row within Card Body -->
+                        <div class="row">
+                            <div class="col-lg-6 d-none d-lg-block bg-login-image"></div>
+                            <div class="col-lg-6">
+                                <div class="p-5">
+                                    <div class="text-center">
+                                        <h1 class="h4 text-gray-900 mb-4">E-Voucher JNE</h1>
+                                    </div>
+                                    <form class="user" action="<?php echo base_url('auth/login');?>" method="post">
+                                        <div class="form-group">
+                                            <input type="text" class="form-control form-control-user"
+                                                id="username" name="username"aria-describedby="emailHelp"
+                                                placeholder="Enter Email Address...">
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="password" class="form-control form-control-user"
+                                                id="password" name="password" placeholder="Password">
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="custom-control custom-checkbox small">
+                                                <input type="checkbox" class="custom-control-input" id="customCheck">
+                                                <label class="custom-control-label" for="customCheck">Remember
+                                                    Me</label>
+                                            </div>
+                                        </div>
+                                        <button type="submit " class="btn btn-primary btn-user btn-block">
+                                            Login
+                                        </button>
+                                        <hr>
 
-                <!-- Topbar -->
-                <?php include 'widgets/topbar.php'?>
-                <!-- End of Topbar -->
-
-                <!-- Begin Page Content -->
-                <div class="container-fluid">
-
-                    <!-- create session web -->
-                    <?php include $this->session->userdata('pages').'/'.$page_name.'.php'?>
-
+                                    </form>
+                                    <hr>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
             </div>
-            <!-- End of Main Content -->
-
-            <!-- Footer -->
-            <footer class="sticky-footer bg-white">
-                <div class="container my-auto">
-                    <div class="copyright text-center my-auto">
-                        <span>Copyright &copy; Your Website 2021</span>
-                    </div>
-                </div>
-            </footer>
-            <!-- End of Footer -->
 
         </div>
-        <!-- End of Content Wrapper -->
 
     </div>
-    <!-- End of Page Wrapper -->
 
-    <!-- Scroll to Top Button-->
-    <a class="scroll-to-top rounded" href="#page-top">
-        <i class="fas fa-angle-up"></i>
-    </a>
+    <!-- Bootstrap core JavaScript-->
+    <script src="<?= base_url()?>public/vendor/jquery/jquery.min.js"></script>
+    <script src="<?= base_url()?>public/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    
+    
+    <!-- Core plugin JavaScript-->
+    <script src="<?= base_url()?>public/vendor/jquery-easing/jquery.easing.min.js"></script>
+    
+    
+    <!-- Custom scripts for all pages-->
+    <script src="<?= base_url()?>public/js/sb-admin-2.min.js"></script>
 
 </body>
-
-<?php include 'template/bottom.php' ?>
 
 </html>

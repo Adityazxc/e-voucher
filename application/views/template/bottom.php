@@ -17,3 +17,4 @@
 <!-- Page level custom scripts -->
 <script src="<?= base_url()?>public/js/demo/datatables-demo.js"></script>
 <!-- <script src="https://css.jne.co.id/mysales/assets/js/plugin/datatables/datatables.min.js"></script> -->
+
