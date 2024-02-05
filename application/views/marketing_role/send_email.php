@@ -61,7 +61,6 @@
 
                             </td>
 
-
                         </tr>
                         <?php $counter++; ?>
                     <?php endforeach; ?>
@@ -70,7 +69,7 @@
         </div>
     </div>
 </div>
-<!-- 
+
 <script>
     $(document).ready(function () {
         // Initialize DataTable with options
@@ -107,7 +106,7 @@
 
     });
     
-</script> -->
+</script>
 
 <!-- <script>
 

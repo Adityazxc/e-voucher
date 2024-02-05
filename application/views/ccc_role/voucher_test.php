@@ -1,12 +1,22 @@
 
 <h1>Voucher Data</h1>
 
-<label for="fromDate">From:</label>
+<!-- <label for="fromDate">From:</label>
 <input type="date" id="fromDate" name="fromDate">
 <label for="thruDate">Thru:</label>
-<input type="date" id="thruDate" name="thruDate">
-
-
+<input type="date" id="thruDate" name="thruDate"> -->
+<div class="md-form md-outline input-with-post-icon datepicker" id="customDays">
+    <input placeholder="Select date" name="fromDate" type="date" id="fromDate" class="form-control">
+    <label for="thruDate">Thru:</label>
+    <input placeholder="Select date" name="thruDate" type="date" id="thruDate" class="form-control">
+  <i class="fas fa-calendar input-prefix" tabindex=0></i>
+</div>
+<script>
+    $('.datepicker').datepicker({
+      weekdaysShort: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
+      showMonthsShort: true
+    })
+</script>
 
 <div class="card shadow mb-4">
     <div class="card-header py-3">

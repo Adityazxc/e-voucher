@@ -17,13 +17,13 @@ class Ccc extends CI_Controller
 
     public function index()
     {
-        if($this->session->userdata('logged_in')&&$this->session->userdata('role')=='CCC'){
-        $data['title'] = 'Voucher Data';
-        $data['page_name'] = 'dashboard_ccc';
-        $data['role'] = 'CCC';
-        $data['voucher_data'] = $this->Customer_model->getVoucherData();
-        $this->load->view('dashboard', $data);
-        }else{
+        if ($this->session->userdata('logged_in') && $this->session->userdata('role') == 'CCC') {
+            $data['title'] = 'Voucher Data';
+            $data['page_name'] = 'dashboard_ccc';
+            $data['role'] = 'CCC';
+            $data['voucher_data'] = $this->Customer_model->getVoucherData();
+            $this->load->view('dashboard', $data);
+        } else {
             redirect('auth');
         }
     }
@@ -54,17 +54,14 @@ class Ccc extends CI_Controller
 
             // Proses data dari $sheetData sesuai kebutuhan
             foreach ($sheetData as $row) {
-
+                
                 $data = array(
-                    'awb_no' => $row['C'],
-                    'id_customer' => $row['D'],
-                    'customer_name' => $row['E'],
-                    'qty' => $row['F'],
-                    'weight' => $row['G'],
-                    'harga' => $row['H'],
-                    'email' => $row['I'],
-                    'no_hp' => $row['J'],
-                    'service' => $row['K']
+                    'customer_name' => $row['B'],
+                    'email' => $row['C'],
+                    'no_hp' => $row['D'],
+                    'harga' => $row['E'],
+                    'awb_no' => $row['F'],
+                    'service' => $row['G']
                 );
 
 
@@ -72,7 +69,7 @@ class Ccc extends CI_Controller
                 $data['voucher'] = $voucher_code;
                 $data['date'] = date('Y-m-d H:i:s');
                 $data['expired_date'] = date('Y-m-d', strtotime('+30 days'));
-                $voucher_value = $row['H'];
+                $voucher_value = $row['E'];
                 $data['value_voucher'] = $voucher_value;
                 $data['status'] = 'N'; // Default status
                 // Simpan data ke database atau lakukan proses lain sesuai kebutuhan
@@ -108,36 +105,33 @@ class Ccc extends CI_Controller
             $voucher_code .= $characters[rand(0, strlen($characters) - 1)];
         }
 
-        // validasi agar tidak ada karakter mirip
-        while ($this->hasSimilarCharacters($voucher_code)) {
-            $voucher_code = $this->generateVoucherCode();
-        }
-        ;
 
         return $voucher_code;
     }
 
-    // Fungsi untuk validasi karakter agar tidak ada karakter yang mirip
-    private function hasSimilarCharacters($voucher_code)
-    {
-        // Tambahkan logika validasi karakter yang mirip sesuai kebutuhan
-        // Contoh: Jika tidak boleh ada karakter yang mirip, tambahkan validasi di sini
 
-        return false; // Ganti dengan logika validasi sesuai kebutuhan
-    }
 
+    // public function view_add_data()
+    // {
+    //     $dateFrom = $this->input->get('dateFrom');
+    //     $dateThru = $this->input->get('dateThru');
+
+    //     // Pass the dateFrom and dateThru to the model to fetch filtered data
+
+    //     $data['title'] = 'Add Data';
+    //     $data['page_name'] = 'add_data';
+    //     $data['role'] = 'CCC';
+    //     $data['voucher_data'] = $this->Customer_model->getImportData($dateFrom, $dateThru);
+    //     $this->load->view('dashboard', $data);
+
+    // }
 
     public function view_add_data()
-    {
-        $dateFrom = $this->input->get('dateFrom');
-        $dateThru = $this->input->get('dateThru');
-
-        // Pass the dateFrom and dateThru to the model to fetch filtered data
-
+    {    
         $data['title'] = 'Add Data';
         $data['page_name'] = 'add_data';
         $data['role'] = 'CCC';
-        $data['voucher_data'] = $this->Customer_model->getVoucherData($dateFrom, $dateThru);
+        $data['voucher_data'] = $this->Customer_model->getImportData();
         $this->load->view('dashboard', $data);
 
     }

@@ -36,7 +36,7 @@
     <div class="card-body">
 
         <div class="table-responsive">
-            <table id="dataTable" class="table table-bordered" width="100%" border="1" cellspacing="0">
+            <table id="voucher" class="table table-bordered" width="100%" border="1" cellspacing="0">
                 <thead>
                     <tr>
                         <th>No</th>

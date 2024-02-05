@@ -23,7 +23,7 @@ class Agen extends CI_Controller
         $this->load->view('dashboard', $data);
         }else{
             redirect('auth');
-        }
+        }        
     }
     public function redeem($data = array())
     {
@@ -57,11 +57,13 @@ class Agen extends CI_Controller
     }
     
     public function reedem_voucher()
-    {
+    {                     
         $reedem_voucher = $this->customer_model->reedem_voucher();
-        if($reedem_voucher == true){
-            
-            $this->session->set_flashdata('success', 'Data berhasil disimpan');
+        if($reedem_voucher == true){            
+            $this->session->set_flashdata('success', 'Data berhasil disimpan');    
+            redirect(base_url('agen/search_customer'));
+        }else {
+            $this->session->set_flashdata('error', 'Gagal redeem voucher');
             redirect(base_url('agen/search_customer'));
         }
     }
