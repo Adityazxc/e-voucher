@@ -15,11 +15,15 @@ class Finance extends CI_Controller
 
     public function index()
     {
+        if($this->session->userdata('logged_in')&&$this->session->userdata('role')=='Finance'){
         $data['title'] = 'Dashboard Marketing';
         $data['page_name'] = 'dashboard_finance';
         $data['role']      = 'Finance';
         $data['voucher_data'] = $this->Customer_model->getVoucherData();
         $this->load->view('dashboard', $data);
+        }else{
+            redirect('auth');
+        }
     }
     public function send_email()
     {

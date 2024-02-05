@@ -104,8 +104,8 @@
 
 
     <!-- Add Data Link -->
-    <li class="nav-item btn btn-danger" style="margin:10px">
-        <a class="logout-btn" style="color:#FFFF; decoration:none;" href="<?php echo base_url('auth/logout'); ?>">Logout</a>
+    <li class="nav-item" style="margin:10px">
+        <a role="button" style="width: 100%;"class="btn btn-danger logout-btn" style="color:#FFFF; decoration:none;" href="<?php echo base_url('auth/logout'); ?>">Logout</a>
     </li>
 
 </ul>

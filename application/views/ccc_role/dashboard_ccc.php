@@ -1,11 +1,11 @@
-<form method="get" action="<?= base_url('controller/method'); ?>">
+<form id="filterForm">
     <label for="dateFrom">From:</label>
-    <input type="date" id="dateFrom" name="dateFrom">
+    <input type="date" id="dateFrom" name="dateFrom" value="<?= date('Y-m-d') ?>">
 
     <label for="dateThru">Thru:</label>
-    <input type="date" id="dateThru" name="dateThru">
+    <input type="date" id="dateThru" name="dateThru" value="<?= date('Y-m-d') ?>">
 
-    <button type="submit">Filter</button>
+    <button type="button" onclick="filterData()">Filter</button>
 </form>
 <div class="row">
     <!-- Filter Form -->
@@ -105,7 +105,7 @@
                     <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
                             Total</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800 totalstatus5">Tunggu.</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800 totalstatus5"></div>
                     </div>
                     <button class="btn btn-default btn-icon" onclick="btnstatus5()">
                         <div class="col-auto">
@@ -149,12 +149,12 @@
 
 <script src="<?= base_url() ?>public/vendor/jquery/jquery.min.js"></script>
 
-
 <script>
     var jumlah = () => {
         var formData = {
-
             status: $('#status').val(),
+            dateFrom: $('[name="dateFrom"]').val(),
+            dateThru: $('[name="dateThru"]').val(),
         };
 
         // BOX 1 
@@ -162,14 +162,14 @@
         $('.totalstatus2').text('Tunggu.');
         $('.totalstatus3').text('Tunggu.');
         $('.totalstatus4').text('Tunggu.');
-        $('.totalstatus5').text('500.000');
+        $('.totalstatus5').text('Tunggu.');
         $.ajax({
             url: "<?= base_url('ccc/summary_customer') ?>",
             dataType: "JSON",
             type: "POST",
             data: formData,
             success: (r) => {
-                // BOX 1 
+                // BOX 1              
                 $('.totalstatus1').text(r.sum_status1);
                 $('.totalstatus2').text(r.sum_status2);
                 $('.totalstatus3').text(r.sum_status3);
@@ -177,10 +177,12 @@
                 $('.totalstatus5').text(r.sum_status5);
 
 
+
             }
         });
     }
 </script>
+
 
 
 <script type="text/javascript">
@@ -195,6 +197,8 @@
                 "type": "POST",
                 "data": function (data) {
                     data.status = $('[name="status"]').val();
+                    data.dateFrom = $('[name="dateFrom"]').val();
+                    data.dateThru = $('[name="dateThru"]').val();
                 }
             },
             "columnDefs": [{
@@ -207,7 +211,17 @@
             }
             ]
         });
+        jumlah();
+    });
+    $('[name="dateFrom"]').on('change', (e) => {
+        $('#status').val('status1');
+        table.ajax.reload();
+        jumlah();
 
+    });
+    $('[name="dateThru"]').on('change', (e) => {
+        $('#status').val('status1');
+        table.ajax.reload();
         jumlah();
     });
 
@@ -234,6 +248,4 @@
         table.ajax.reload();
         jumlah();
     }
-
-
 </script>

@@ -9,6 +9,7 @@ class Ccc_model extends CI_Model {
 
     private function _getdatatables_customer()
     {
+        
         $this->db->select('*');
         if($this->input->post('status') == 'status2'){
             $this->db->where('status', 'Y');
@@ -16,6 +17,11 @@ class Ccc_model extends CI_Model {
             $this->db->where('status', 'N');
         }else if($this->input->post('status') == 'status4'){
         }
+        $this->db->where('DATE(date) >=', $this->input->post('dateFrom'));
+        $this->db->where('DATE(date) <=', $this->input->post('dateThru'));
+
+
+
         $this->db->from('customers');
         $i = 0;
         foreach ($this->customer_column_search as $item) { // loop column
@@ -65,6 +71,8 @@ class Ccc_model extends CI_Model {
             $this->db->where('status', 'N');
         }else if($this->input->post('status') == 'status4'){
         }
+        $this->db->where('DATE(date) >=', $this->input->post('dateFrom'));
+        $this->db->where('DATE(date) <=', $this->input->post('dateThru'));
         $this->db->from('customers');
         return $this->db->count_all_results();
     }

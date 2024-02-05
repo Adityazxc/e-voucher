@@ -88,7 +88,7 @@
         $('.totalstatus2').text('Tunggu.');
         $('.totalstatus3').text('Tunggu.');
         $('.totalstatus4').text('Tunggu.');
-        $('.totalstatus5').text('500.000');
+        $('.totalstatus5').text('Tunggu.');
         $.ajax({
             url: "<?= base_url('ccc/summary_customer') ?>",
             dataType: "JSON",

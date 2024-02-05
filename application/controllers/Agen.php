@@ -15,12 +15,15 @@ class Agen extends CI_Controller
 
     public function index()
     {
-
+        if($this->session->userdata('logged_in')&&$this->session->userdata('role')=='Agen'){
         $data['title'] = 'Voucher Data';
         $data['page_name'] = 'dashboard_agen';
         $data['role']      = 'Agen';
         $data['voucher_data'] = $this->Customer_model->getVoucherData();
         $this->load->view('dashboard', $data);
+        }else{
+            redirect('auth');
+        }
     }
     public function redeem($data = array())
     {

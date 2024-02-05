@@ -43,11 +43,11 @@
                                         <div class="form-group">
                                             <input type="text" class="form-control form-control-user"
                                                 id="username" name="username"aria-describedby="emailHelp"
-                                                placeholder="Enter Email Address...">
+                                                placeholder="Enter Email Address..." required>
                                         </div>
                                         <div class="form-group">
                                             <input type="password" class="form-control form-control-user"
-                                                id="password" name="password" placeholder="Password">
+                                                id="password" name="password" placeholder="Password" required>
                                         </div>
                                         <div class="form-group">
                                             <div class="custom-control custom-checkbox small">
@@ -56,7 +56,7 @@
                                                     Me</label>
                                             </div>
                                         </div>
-                                        <button type="submit " class="btn btn-primary btn-user btn-block">
+                                        <button type="submit" class="btn btn-primary btn-user btn-block">
                                             Login
                                         </button>
                                         <hr>

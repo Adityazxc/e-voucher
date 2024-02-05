@@ -15,12 +15,15 @@ class Marketing extends CI_Controller
 
     public function index()
     {
-
+        if($this->session->userdata('logged_in')&&$this->session->userdata('role')=='Marketing'){
         $data['title'] = 'Dashboard Marketing';
         $data['page_name'] = 'dashboard_marketing';
         $data['role']      = 'Marketing';
         $data['voucher_data'] = $this->Customer_model->getVoucherData();
         $this->load->view('dashboard', $data);
+        }else{
+            redirect('auth');
+        }
     }
     public function send_email()
     {
@@ -63,7 +66,6 @@ class Marketing extends CI_Controller
 
     public function test(){
         $data['email'] = $this->input->post('email');
-
         echo "<pre>";
         echo print_r($data);
         echo "</pre>";

@@ -109,7 +109,7 @@
     
 </script> -->
 
-<script>
+<!-- <script>
 
     let example = $('#emailTable').DataTable({
         columnDefs: [{
@@ -144,4 +144,4 @@
         }
     });
 
-</script>
+</script> -->

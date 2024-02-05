@@ -1,5 +1,4 @@
 <?php
-
 defined('BASEPATH') or exit('No direct script access allowed');
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
@@ -18,11 +17,15 @@ class Ccc extends CI_Controller
 
     public function index()
     {
+        if($this->session->userdata('logged_in')&&$this->session->userdata('role')=='CCC'){
         $data['title'] = 'Voucher Data';
         $data['page_name'] = 'dashboard_ccc';
         $data['role'] = 'CCC';
         $data['voucher_data'] = $this->Customer_model->getVoucherData();
         $this->load->view('dashboard', $data);
+        }else{
+            redirect('auth');
+        }
     }
 
 
@@ -130,11 +133,11 @@ class Ccc extends CI_Controller
         $dateThru = $this->input->get('dateThru');
 
         // Pass the dateFrom and dateThru to the model to fetch filtered data
-        
+
         $data['title'] = 'Add Data';
         $data['page_name'] = 'add_data';
-        $data['role'] = 'CCC';        
-        $data['voucher_data']= $this->Customer_model->getVoucherData($dateFrom, $dateThru);
+        $data['role'] = 'CCC';
+        $data['voucher_data'] = $this->Customer_model->getVoucherData($dateFrom, $dateThru);
         $this->load->view('dashboard', $data);
 
     }
@@ -169,6 +172,7 @@ class Ccc extends CI_Controller
 
     public function getdatatables_customer()
     {
+        // echo $this->input->post('dateFrom');
         $list = $this->ccc_model->getdatatables_customer();
 
         $data = array();
@@ -181,7 +185,8 @@ class Ccc extends CI_Controller
             }
             $no++;
             $row = array();
-            $row[] = '<small style="font-size:12px">' . $no . '</small>';
+            // $row[] = '<small style="font-size:12px">' . $no . '</small>';
+            $row[] = '<input type="hidden" name="id[]" value="' . $no . '"><input type="checkbox" name="id_customer[]" value="' . @$item->id . '" class="form-check-input ml-2 data-check" id="id_customer">';
             $row[] = '<small style="font-size:12px">' . $item->customer_name . '</small>';
             $row[] = '<small style="font-size:12px">' . $item->email . '</small>';
             $row[] = '<small style="font-size:12px">' . $item->no_hp . '</small>';
@@ -205,24 +210,60 @@ class Ccc extends CI_Controller
     public function summary_customer()
     {
 
+        $this->db->where('DATE(date) >=', $this->input->post('dateFrom'));
+        $this->db->where('DATE(date) <=', $this->input->post('dateThru'));
         $customers_status1 = $this->db->get('customers')->num_rows();
 
         $this->db->where('status', 'Y');
+        $this->db->where('DATE(date) >=', $this->input->post('dateFrom'));
+        $this->db->where('DATE(date) <=', $this->input->post('dateThru'));
         $customers_status2 = $this->db->get('customers')->num_rows();
 
         $this->db->where('status', 'N');
+        $this->db->where('DATE(date) >=', $this->input->post('dateFrom'));
+        $this->db->where('DATE(date) <=', $this->input->post('dateThru'));
         $customers_status3 = $this->db->get('customers')->num_rows();
 
+        $this->db->where('status', 'N');
+        $this->db->where('DATE(date) >=', $this->input->post('dateFrom'));
+        $this->db->where('expired_date <=', $this->input->post('dateThru'));
         $customers_status4 = $this->db->get('customers')->num_rows();
+        // echo print_r($this->db->last_query());
 
+
+        $this->db->select('SUM(harga) as totalharga');
+        $this->db->where('status', 'Y');
+        $this->db->where('DATE(date) >=', $this->input->post('dateFrom'));
+        $this->db->where('DATE(date) <=', $this->input->post('dateThru'));
+        $customers_status5 = $this->db->get('customers')->row();
 
         echo json_encode([
             'sum_status1' => $customers_status1,
             'sum_status2' => $customers_status2,
             'sum_status3' => $customers_status3,
             'sum_status4' => $customers_status4,
+            'sum_status5' => $customers_status5->totalharga,
         ]);
     }
 
+
+    public function data()
+    {
+
+        $customers = $this->db->get('customers');
+        foreach ($customers->result() as $row) {
+            $customer_data = array(
+                'customer_name' => $row->customer_name,
+                'awb_no' => $row->awb_no,
+                'date' => $row->date,
+                'email' => $row->email,
+                'no_hp' => $row->no_hp,
+                'harga' => $row->harga,
+                'service' => $row->service,
+                'expired_date' => $row->expired_date,
+            );
+            $this->db->insert('customers', $customer_data);
+        }
+    }
 
 }

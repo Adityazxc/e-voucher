@@ -1,12 +1,14 @@
-<!-- Page Heading -->
-<div class="d-sm-flex align-items-center justify-content-between mb-4">
-    <h1 class="h3 mb-0 text-gray-800">Dashboard Marketing</h1>
-</div>
+<form id="filterForm">
+    <label for="dateFrom">From:</label>
+    <input type="date" id="dateFrom" name="dateFrom" value="<?= date('Y-m-d') ?>">
 
+    <label for="dateThru">Thru:</label>
+    <input type="date" id="dateThru" name="dateThru" value="<?= date('Y-m-d') ?>">
 
-
+    <button type="button" onclick="filterData()">Filter</button>
+</form>
 <div class="row">
-
+    <!-- Filter Form -->
     <!-- Earnings (Monthly) Card Example -->
     <div class="col mb-4">
         <div class="card border-left-primary shadow h-100 py-2">
@@ -19,7 +21,7 @@
                     </div>
                     <button class="btn btn-default btn-icon" onclick="btnstatus1()">
                         <div class="col-auto">
-                            <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                            <i class="bi bi-send fa-2x "></i>
                         </div>
                     </button>
                 </div>
@@ -69,7 +71,7 @@
                     </div>
                     <button class="btn btn-default btn-icon" onclick="btnstatus3()">
                         <div class="col-auto">
-                            <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                            <i class="bi bi-send fa-2x text-gray-300"></i>
                         </div>
                     </button>
                 </div>
@@ -103,7 +105,7 @@
                     <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
                             Total</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800 totalstatus5">Tunggu.</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800 totalstatus5"></div>
                     </div>
                     <button class="btn btn-default btn-icon" onclick="btnstatus5()">
                         <div class="col-auto">
@@ -134,7 +136,7 @@
                         <th>AWB no</th>
                         <th>Status</th>
                         <th>Service</th>
-                        <th>E-Voucher</th>                        
+                        <th>E-Voucher</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -147,12 +149,12 @@
 
 <script src="<?= base_url() ?>public/vendor/jquery/jquery.min.js"></script>
 
-
 <script>
     var jumlah = () => {
         var formData = {
-
             status: $('#status').val(),
+            dateFrom: $('[name="dateFrom"]').val(),
+            dateThru: $('[name="dateThru"]').val(),
         };
 
         // BOX 1 
@@ -167,18 +169,20 @@
             type: "POST",
             data: formData,
             success: (r) => {
-                // BOX 1 
+                // BOX 1              
                 $('.totalstatus1').text(r.sum_status1);
                 $('.totalstatus2').text(r.sum_status2);
                 $('.totalstatus3').text(r.sum_status3);
                 $('.totalstatus4').text(r.sum_status4);
                 $('.totalstatus5').text(r.sum_status5);
-                
-             
+
+
+
             }
         });
     }
 </script>
+
 
 
 <script type="text/javascript">
@@ -193,10 +197,12 @@
                 "type": "POST",
                 "data": function (data) {
                     data.status = $('[name="status"]').val();
+                    data.dateFrom = $('[name="dateFrom"]').val();
+                    data.dateThru = $('[name="dateThru"]').val();
                 }
             },
             "columnDefs": [{
-                "targets": [0, 1, 2, 3, 4, 5, 6,7,8],
+                "targets": [0, 1, 2, 3, 4, 5, 6, 7, 8],
                 "orderable": false
             },
             {
@@ -205,7 +211,17 @@
             }
             ]
         });
+        jumlah();
+    });
+    $('[name="dateFrom"]').on('change', (e) => {
+        $('#status').val('status1');
+        table.ajax.reload();
+        jumlah();
 
+    });
+    $('[name="dateThru"]').on('change', (e) => {
+        $('#status').val('status1');
+        table.ajax.reload();
         jumlah();
     });
 
@@ -232,6 +248,4 @@
         table.ajax.reload();
         jumlah();
     }
-   
-
 </script>
