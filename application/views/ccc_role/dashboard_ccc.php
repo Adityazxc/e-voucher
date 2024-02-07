@@ -1,12 +1,20 @@
 <form id="filterForm">
-    <label for="dateFrom">From:</label>
-    <input type="date" id="dateFrom" name="dateFrom" value="<?= date('Y-m-d') ?>">
-
-    <label for="dateThru">Thru:</label>
-    <input type="date" id="dateThru" name="dateThru" value="<?= date('Y-m-d') ?>">
-
-    <button type="button" onclick="filterData()">Filter</button>
+    <div class="form-row">
+        <div class="form-group col-md-5">
+            <label for="dateFrom">From:</label>
+            <input type="date" class="form-control" id="dateFrom" name="dateFrom" value="<?= date('Y-m-d') ?>">
+        </div>
+        <div class="form-group col-md-5">
+            <label for="dateThru">Thru:</label>
+            <input type="date" class="form-control" id="dateThru" name="dateThru" value="<?= date('Y-m-d') ?>">
+        </div>
+        <!-- <div class="form-group col-md-2">                
+                <button type="button" class="btn btn-primary" onclick="filterData()">Filter</button>
+            </div> -->
+    </div>
 </form>
+
+
 <div class="row">
     <!-- Filter Form -->
     <!-- Earnings (Monthly) Card Example -->
@@ -118,11 +126,17 @@
     </div>
 </div>
 
-<div class="card shadow mb-4">
-    <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">Voucher Data</h6>
+<div class="card card-raised">
+    <div class="card-header bg-primary text-white px-4">
+        <div class="d-flex justify-content-between align-item-center">
+            <div class="me-4">
+                <h2 class="card-title text-white mb-0 ">Voucher</h2>
+                <div class="card-subtitile">Details and historty</div>
+            </div>
+
+        </div>
     </div>
-    <div class="card-body">
+    <div class="card-body p-4">
         <input type="hidden" name="status" id="status" value="">
         <div class="table-responsive">
             <table id="voucher" class="table table-bordered" width="100%" cellspacing="0">
@@ -162,7 +176,7 @@
         $('.totalstatus2').text('Tunggu.');
         $('.totalstatus3').text('Tunggu.');
         $('.totalstatus4').text('Tunggu.');
-        $('.totalstatus5').text('Tunggu.');
+        $('.totalstatus5').text('Rp 0');
         $.ajax({
             url: "<?= base_url('ccc/summary_customer') ?>",
             dataType: "JSON",
@@ -174,12 +188,26 @@
                 $('.totalstatus2').text(r.sum_status2);
                 $('.totalstatus3').text(r.sum_status3);
                 $('.totalstatus4').text(r.sum_status4);
-                $('.totalstatus5').text(r.sum_status5);
+                $('.totalstatus5').text(formatRupiah(r.sum_status5));
 
 
 
             }
         });
+    }
+    // Fungsi untuk mengubah angka menjadi format rupiah
+    function formatRupiah(angka) {
+        var number_string = angka.toString();
+        var sisa = number_string.length % 3;
+        var rupiah = number_string.substr(0, sisa);
+        var ribuan = number_string.substr(sisa).match(/\d{3}/g);
+
+        if (ribuan) {
+            separator = sisa ? '.' : '';
+            rupiah += separator + ribuan.join('.');
+        }
+
+        return 'Rp ' + rupiah;
     }
 </script>
 

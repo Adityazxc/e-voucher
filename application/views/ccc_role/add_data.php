@@ -1,120 +1,126 @@
-<!-- script untuk no urut -->
-<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 
-<form method="get" action="<?= base_url('ccc/view_add_data'); ?>">
-    <label for="dateFrom">From:</label>
-    <input type="date" id="dateFrom" name="dateFrom">
 
-    <label for="dateThru">Thru:</label>
-    <input type="date" id="dateThru" name="dateThru">
-
-    <button type="submit">Filter</button>
-</form>
-
-<form action="<?php echo base_url('ccc/importData'); ?>" method="post" enctype="multipart/form-data">
-    <div class="row">
-        <div class="col-5 mb-4"><button type="button" class="btn btn-primary" data-toggle="modal"
-                data-target="#addCustomerModal">
-                Add Customer
-            </button></div>
-        <div class="col mb-4"><input type="file" class="form-control mx-2" name="excel_file" id="excel_file" required>
+<form id="filterForm">
+    <div class="form-row">
+        <div class="form-group col-md-5">
+            <label for="dateFrom">From:</label>
+            <input type="date" class="form-control" id="dateFrom" name="dateFrom" value="<?= date('Y-m-d') ?>">
         </div>
-        <div class="col mb-4"><button type="submit" class="btn btn-primary mx-2">Import Data</button></div>
+        <div class="form-group col-md-5">
+            <label for="dateThru">Thru:</label>
+            <input type="date" class="form-control" id="dateThru" name="dateThru" value="<?= date('Y-m-d') ?>">
+        </div>
+        <!-- <div class="form-group col-md-2">                
+                <button type="button" class="btn btn-primary" onclick="filterData()">Filter</button>
+            </div> -->
     </div>
 </form>
+
 
 
 <!-- Modal -->
 <?php $this->load->view('ccc_role/modal_add_data'); ?>
 <!-- end Modal -->
 
-<div class="card shadow mb-4">
 
-    <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">Voucher Data</h6>
+<div class="card card-raised">
+    <div class="card-header bg-primary text-white px-4">
+        <div class="d-flex justify-content-between align-item-center">
+            <div class="me-4">
+                <h2 class="card-title text-white mb-0 ">Voucher</h2>
+                <div class="card-subtitile">Details and historty</div>
+            </div>
+
+        </div>
     </div>
-    <div class="card-body">
+    <div class="card-body p-4">
+        <input type="hidden" name="status" id="status" value="">
+        <!-- Tambahkan ini di atas tabel -->
+        <form action="<?php echo base_url('ccc/importData'); ?>" method="post" enctype="multipart/form-data">
+            <div class="row">
+                <div class="col-md-5 mb-2">
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addCustomerModal">
+                        Add Customer
+                    </button>
+                </div>
+                <div class="col-md-3 mb-2">
+                    <input type="file" class="form-control" name="excel_file" id="excel_file" required>
+                </div>
+                <div class="col-md-4 mb-2">
+                    <button type="submit" class="btn btn-primary">Import Data</button>
+                </div>
+            </div>
+        </form>
 
         <div class="table-responsive">
-            <table id="voucher" class="table table-bordered" width="100%" border="1" cellspacing="0">
+            <table id="voucher" class="table table-bordered" width="100%" cellspacing="0">
                 <thead>
                     <tr>
                         <th>No</th>
                         <th>Nama Pengirim</th>
                         <th>Email</th>
-                        <th>No Tlp</th>
-                        <th>Harga Ongkir</th>
+                        <th>No. Telepon</th>
+                        <th>Harga</th>
                         <th>AWB no</th>
+                        <th>Status</th>
                         <th>Service</th>
-                        <th>E-Voucher</th>                        
-                        <th>Date</th>                        
+                        <th>E-Voucher</th>
                     </tr>
                 </thead>
-                <tbody id="dataBody">
-                    <?php $counter = 1; ?>
-                    <?php foreach ($voucher_data as $voucher): ?>
-                        <tr>
-                            <td></td> <!-- No Urut column will be filled dynamically in JavaScript -->
-                            <td>
-                                <?php echo $voucher->customer_name ?>
+                <tbody>
 
-                            </td>
-                            <td>
-                                <?php echo $voucher->email; ?>
-                            </td>
-                            <td>
-                                <?php echo $voucher->no_hp; ?>
-
-                            </td>
-                            <td>
-                                <?php echo $voucher->harga; ?>
-                            </td>
-                            <td>
-                                <?php echo $voucher->awb_no; ?>
-
-
-                            </td>
-                            <td>
-                                <?php echo $voucher->service; ?>
-
-                            </td>
-                            <td>
-                                <?php echo $voucher->voucher; ?>
-
-                            </td>
-                            <td>
-                                <?php echo $voucher->date; ?>
-
-                            </td>
-                         
-                        </tr>
-                        <?php $counter++; ?>
-                    <?php endforeach; ?>
                 </tbody>
             </table>
         </div>
     </div>
 </div>
 
-<script>
+<script src="<?= base_url() ?>public/vendor/jquery/jquery.min.js"></script>
+
+<script type="text/javascript">
+
+    var table;
     $(document).ready(function () {
-        // Initialize DataTable with options
-        var table = $('#dataTable').DataTable({
-            "paging": true,
-            "searching": true,
-            "ordering": true,
-            "info": true,
-            "responsive": true
+        //datatables
+        table = $('#voucher').DataTable({
+            "processing": true,
+            "serverSide": true,
+            "ajax": {
+                "url": "<?= base_url('ccc/getdatatables_customer') ?>",
+                "type": "POST",
+                "data": function (data) {
+                    data.status = $('[name="status"]').val();
+                    data.dateFrom = $('[name="dateFrom"]').val();
+                    data.dateThru = $('[name="dateThru"]').val();
+
+                }
+            },
+            "columnDefs": [{
+                "targets": [0, 1, 2, 3, 4, 5, 6, 7, 8],
+                "orderable": false
+            },
+            {
+                "targets": [0, 1, 2, 3, 4, 5, 6],
+                "className": 'text-center'
+            }
+            ]
         });
-        // Custom rendering for No Urut column
-        table.on('order.dt search.dt', function () {
-            table.column(0, {
-                search: 'applied',
-                order: 'applied'
-            }).nodes().each(function (cell, i) {
-                cell.innerHTML = i + 1;
-            });
-        }).draw();
+       
+
+      
 
     });
+
+    $('[name="dateFrom"]').on('change', (e) => {
+        $('#status').val('status1');
+        table.ajax.reload();
+
+    });
+    $('[name="dateThru"]').on('change', (e) => {
+        $('#status').val('status1');
+        table.ajax.reload();
+
+    });
+
+
 </script>

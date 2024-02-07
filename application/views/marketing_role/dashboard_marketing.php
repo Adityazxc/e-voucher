@@ -1,11 +1,17 @@
 <form id="filterForm">
-    <label for="dateFrom">From:</label>
-    <input type="date" id="dateFrom" name="dateFrom" value="<?= date('Y-m-d') ?>">
-
-    <label for="dateThru">Thru:</label>
-    <input type="date" id="dateThru" name="dateThru" value="<?= date('Y-m-d') ?>">
-
-    <button type="button" onclick="filterData()">Filter</button>
+    <div class="form-row">
+        <div class="form-group col-md-5">
+            <label for="dateFrom">From:</label>
+            <input type="date" class="form-control" id="dateFrom" name="dateFrom" value="<?= date('Y-m-d') ?>">
+        </div>
+        <div class="form-group col-md-5">
+            <label for="dateThru">Thru:</label>
+            <input type="date" class="form-control" id="dateThru" name="dateThru" value="<?= date('Y-m-d') ?>">
+        </div>
+        <!-- <div class="form-group col-md-2">                
+                <button type="button" class="btn btn-primary" onclick="filterData()">Filter</button>
+            </div> -->
+    </div>
 </form>
 <div class="row">
     <!-- Filter Form -->
@@ -17,9 +23,9 @@
                     <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                             Dikirim</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800 totalstatus1"></div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800 totalEmailDikirim"></div>
                     </div>
-                    <button class="btn btn-default btn-icon" onclick="btnstatus1()">
+                    <button class="btn btn-default btn-icon" onclick="btnEmailDikirim()">
                         <div class="col-auto">
                             <i class="bi bi-send fa-2x "></i>
                         </div>
@@ -36,10 +42,10 @@
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                            Digunakan</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800 totalstatus2"></div>
+                            Belum Dikirim</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800 totalBelumDikirim"></div>
                     </div>
-                    <button class="btn btn-default btn-icon" onclick="btnstatus2()">
+                    <button class="btn btn-default btn-icon" onclick="btnBelumDikirim()">
                         <div class="col-auto">
                             <i class="fas fa-calendar fa-2x text-gray-300"></i>
                         </div>
@@ -105,13 +111,13 @@
                     <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
                             Total</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800 totalstatus5"></div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800 totalPengeluaran"></div>
                     </div>
-                    <button class="btn btn-default btn-icon" onclick="btnstatus5()">
-                        <div class="col-auto">
-                            <i class="fas fa-calendar fa-2x text-gray-300"></i>
-                        </div>
-                    </button>
+
+                    <div class="col-auto">
+                        <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -119,8 +125,14 @@
 </div>
 
 <div class="card shadow mb-4">
-    <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">Voucher Data</h6>
+<div class="card-header bg-primary text-white px-4">
+        <div class="d-flex justify-content-between align-item-center">
+            <div class="me-4">
+                <h2 class="card-title text-white mb-0 ">Voucher</h2>
+                <div class="card-subtitile">Details and history</div>
+            </div>
+
+        </div>
     </div>
     <div class="card-body">
         <input type="hidden" name="status" id="status" value="">
@@ -137,6 +149,7 @@
                         <th>Status</th>
                         <th>Service</th>
                         <th>E-Voucher</th>
+                        <th>Status Email</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -158,28 +171,41 @@
         };
 
         // BOX 1 
-        $('.totalstatus1').text('Tunggu.');
-        $('.totalstatus2').text('Tunggu.');
+        $('.totalEmailDikirim').text('Tunggu.');
+        $('.totalBelumDikirim').text('Tunggu.');
         $('.totalstatus3').text('Tunggu.');
         $('.totalstatus4').text('Tunggu.');
         $('.totalstatus5').text('Tunggu.');
         $.ajax({
-            url: "<?= base_url('ccc/summary_customer') ?>",
+            url: "<?= base_url('marketing/summary_customer') ?>",
             dataType: "JSON",
             type: "POST",
             data: formData,
             success: (r) => {
                 // BOX 1              
-                $('.totalstatus1').text(r.sum_status1);
-                $('.totalstatus2').text(r.sum_status2);
+                $('.totalEmailDikirim').text(r.sum_email_dikirim);
+                $('.totalBelumDikirim').text(r.sum_belum_dikirim);
                 $('.totalstatus3').text(r.sum_status3);
                 $('.totalstatus4').text(r.sum_status4);
-                $('.totalstatus5').text(r.sum_status5);
+                $('.totalPengeluaran').text(formatRupiah(r.sum_status5));
 
 
 
             }
         });
+    }
+    function formatRupiah(angka) {
+        var number_string = angka.toString();
+        var sisa = number_string.length % 3;
+        var rupiah = number_string.substr(0, sisa);
+        var ribuan = number_string.substr(sisa).match(/\d{3}/g);
+
+        if (ribuan) {
+            separator = sisa ? '.' : '';
+            rupiah += separator + ribuan.join('.');
+        }
+
+        return 'Rp ' + rupiah;
     }
 </script>
 
@@ -193,7 +219,7 @@
             "processing": true,
             "serverSide": true,
             "ajax": {
-                "url": "<?= base_url('ccc/getdatatables_customer') ?>",
+                "url": "<?= base_url('marketing/getdatatables_customer') ?>",
                 "type": "POST",
                 "data": function (data) {
                     data.status = $('[name="status"]').val();
@@ -202,7 +228,7 @@
                 }
             },
             "columnDefs": [{
-                "targets": [0, 1, 2, 3, 4, 5, 6, 7, 8],
+                "targets": [0, 1, 2, 3, 4, 5, 6, 7, 8,9],
                 "orderable": false
             },
             {
@@ -225,14 +251,14 @@
         jumlah();
     });
 
-    function btnstatus1() {
-        $('#status').val('status1');
+    function btnEmailDikirim() {
+        $('#status').val('emailDikirim');
         table.ajax.reload();
         jumlah();
     }
 
-    function btnstatus2() {
-        $('#status').val('status2');
+    function btnBelumDikirim() {
+        $('#status').val('belumDikirim');
         table.ajax.reload();
         jumlah();
     }
@@ -244,7 +270,7 @@
     }
 
     function btnstatus4() {
-        $('#status').val('status4');
+        $('#status').val('hangus');
         table.ajax.reload();
         jumlah();
     }

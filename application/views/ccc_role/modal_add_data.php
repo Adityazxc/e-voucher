@@ -14,7 +14,7 @@
                     <div class="form-group">
                         <label for="customerName">Name Pengirim:</label>
                         <input type="text" class="form-control" id="customerName" name="customerName" required>
-                    </div>                 
+                    </div>                             
                     <div class="form-group">
                         <label for="awb_no">No Awb:</label>
                         <input type="text" class="form-control" id="awb_no" name="awb_no" required>

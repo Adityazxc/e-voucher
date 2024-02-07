@@ -54,7 +54,17 @@ class Ccc extends CI_Controller
 
             // Proses data dari $sheetData sesuai kebutuhan
             foreach ($sheetData as $row) {
-                
+                if (
+                    empty($row['B']) ||                    
+                    empty($row['D']) ||
+                    empty($row['E']) ||
+                    empty($row['F']) ||
+                    empty($row['G'])
+                ) {
+                    // Handle empty values, show an error message, or skip the row
+                    continue;
+                }
+
                 $data = array(
                     'customer_name' => $row['B'],
                     'email' => $row['C'],
@@ -63,6 +73,8 @@ class Ccc extends CI_Controller
                     'awb_no' => $row['F'],
                     'service' => $row['G']
                 );
+                // Check if email is provided, allow null
+            
 
 
                 $voucher_code = $this->generateVoucherCode();
@@ -72,12 +84,9 @@ class Ccc extends CI_Controller
                 $voucher_value = $row['E'];
                 $data['value_voucher'] = $voucher_value;
                 $data['status'] = 'N'; // Default status
+                $data['status_email'] = 'N'; // Default status
                 // Simpan data ke database atau lakukan proses lain sesuai kebutuhan
                 $this->Customer_model->tambah($data);
-
-                // echo "<pre>";
-                // echo print_r($data);
-                // echo "</pre>";
             }
 
             $this->session->set_flashdata('success_message', 'File berhasil diunggah dan data berhasil ditambahkan.');
@@ -127,7 +136,7 @@ class Ccc extends CI_Controller
     // }
 
     public function view_add_data()
-    {    
+    {
         $data['title'] = 'Add Data';
         $data['page_name'] = 'add_data';
         $data['role'] = 'CCC';
@@ -179,8 +188,7 @@ class Ccc extends CI_Controller
             }
             $no++;
             $row = array();
-            // $row[] = '<small style="font-size:12px">' . $no . '</small>';
-            $row[] = '<input type="hidden" name="id[]" value="' . $no . '"><input type="checkbox" name="id_customer[]" value="' . @$item->id . '" class="form-check-input ml-2 data-check" id="id_customer">';
+            $row[] = '<small style="font-size:12px">' . $no . '</small>';
             $row[] = '<small style="font-size:12px">' . $item->customer_name . '</small>';
             $row[] = '<small style="font-size:12px">' . $item->email . '</small>';
             $row[] = '<small style="font-size:12px">' . $item->no_hp . '</small>';

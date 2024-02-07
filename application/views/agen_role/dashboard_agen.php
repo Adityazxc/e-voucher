@@ -1,31 +1,32 @@
-<!-- Page Heading -->
-<div class="row">
-    <!-- Earnings (Monthly) Card Example -->
-    <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card border-left-primary shadow h-100 py-2">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                            Digunakan</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">50</div>
-                    </div>
-                    <div class="col-auto">
-                        <i class="fas fa-calendar fa-2x text-gray-300"></i>
-                    </div>
-                </div>
-            </div>
+<form id="filterForm">
+    <div class="form-row">
+        <div class="form-group col-md-5">
+            <label for="dateFrom">From:</label>
+            <input type="date" class="form-control" id="dateFrom" name="dateFrom" value="<?= date('Y-m-d') ?>">
         </div>
+        <div class="form-group col-md-5">
+            <label for="dateThru">Thru:</label>
+            <input type="date" class="form-control" id="dateThru" name="dateThru" value="<?= date('Y-m-d') ?>">
+        </div>
+        <!-- <div class="form-group col-md-2">                
+                <button type="button" class="btn btn-primary" onclick="filterData()">Filter</button>
+            </div> -->
     </div>
+</form>
+
+<div class="row">
+
     <!-- Earnings (Monthly) Card Example -->
     <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card border-left-primary shadow h-100 py-2">
+        <div class="card border-left-success shadow h-100 py-2">
             <div class="card-body">
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">Rp 40.000</div>
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                            Digunakan</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800 totalDigunakan"></div>
                     </div>
+
                     <div class="col-auto">
                         <i class="fas fa-calendar fa-2x text-gray-300"></i>
                     </div>
@@ -34,4 +35,156 @@
         </div>
     </div>
 
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-warning shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                            Total</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800 totalPengeluaran"></div>
+                    </div>
+
+                    <div class="col-auto">
+                        <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+<div class="card shadow mb-4">
+    <div class="card-header bg-primary text-white px-4">
+        <div class="d-flex justify-content-between align-item-center">
+            <div class="me-4">
+                <h2 class="card-title text-white mb-0 ">Voucher</h2>
+                <div class="card-subtitile">Details and historty</div>
+            </div>
+
+        </div>
+    </div>
+    <div class="card-body">
+        <input type="hidden" name="status" id="status" value="">
+        <div class="table-responsive">
+            <table id="voucher" class="table table-bordered" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Nama Pengirim</th>                    
+                        <th>Harga</th>
+                        <th>AWB no</th>
+                        <th>Status</th>
+                        <th>Service</th>
+                        <th>E-Voucher</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script src="<?= base_url() ?>public/vendor/jquery/jquery.min.js"></script>
+
+<script>
+    var jumlah = () => {
+        var formData = {
+            status: $('#status').val(),
+            dateFrom: $('[name="dateFrom"]').val(),
+            dateThru: $('[name="dateThru"]').val(),
+        };
+
+        // BOX 1         
+        $('.totalDigunakan').text('Tunggu.');
+        $('.totalPengeluaran').text('Rp 0');
+        $.ajax({
+            url: "<?= base_url('agen/summary_customer') ?>",
+            dataType: "JSON",
+            type: "POST",
+            data: formData,
+            success: (r) => {
+                // BOX 1                              
+                $('.totalDigunakan').text(r.sum_status2);
+                $('.totalPengeluaran').text(formatRupiah(r.sum_status5));
+
+
+            }
+        });
+    }
+
+    function formatRupiah(angka) {
+        var number_string = angka.toString();
+        var sisa = number_string.length % 3;
+        var rupiah = number_string.substr(0, sisa);
+        var ribuan = number_string.substr(sisa).match(/\d{3}/g);
+
+        if (ribuan) {
+            separator = sisa ? '.' : '';
+            rupiah += separator + ribuan.join('.');
+        }
+
+        return 'Rp ' + rupiah;
+    }
+</script>
+
+
+
+<script type="text/javascript">
+    var table;
+    $(document).ready(function () {
+        //datatables
+        table = $('#voucher').DataTable({
+            "processing": true,
+            "serverSide": true,
+            "ajax": {
+                "url": "<?= base_url('agen/getdatatables_customer') ?>",
+                "type": "POST",
+                "data": function (data) {
+                    data.status = $('[name="status"]').val();
+                    data.dateFrom = $('[name="dateFrom"]').val();
+                    data.dateThru = $('[name="dateThru"]').val();
+                }
+            },
+            "columnDefs": [{
+                "targets": [0, 1, 2, 3, 4, 5, 6,],
+                "orderable": false
+            },
+            {
+                "targets": [0, 1, 2, 3, 4, 5, 6],
+                "className": 'text-center'
+            },
+            
+            ]
+        });
+        jumlah();
+    });
+    $('[name="dateFrom"]').on('change', (e) => {
+        $('#status').val('status1');
+        table.ajax.reload();
+        jumlah();
+
+    });
+    $('[name="dateThru"]').on('change', (e) => {
+        $('#status').val('status1');
+        table.ajax.reload();
+        jumlah();
+    });
+
+
+    function btnDigunakan() {
+        $('#status').val('status2');
+        table.ajax.reload();
+        jumlah();
+    }
+
+    function btnstatus4() {
+        $('#status').val('status5');
+        table.ajax.reload();
+        jumlah();
+    }
+</script>

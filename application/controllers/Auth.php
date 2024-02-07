@@ -49,13 +49,13 @@ class Auth extends CI_Controller
                 redirect("auth");
             }
 
-            $data = array(
-                'user_id' => $user->id_user,
+            $data_user = array(
+                'id_user' => $user->id_user,
                 'username' => $user->account_name,
                 'logged_in' => TRUE,
                 'role' => $user->role,
             );
-            $this->session->set_userdata($data);
+            $this->session->set_userdata($data_user);
             redirect($redirect_page);
 
         } else {
@@ -116,78 +116,95 @@ class Auth extends CI_Controller
 
     public function email()
     {
-        $output = ' <!DOCTYPE html>
+        $output = '<!DOCTYPE html>
         <html lang="id">
         
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>Promosi Voucher</title>
-            <style>
-                .content, .header,.footer {                  
-                    background-color: #f4f4f4;
-                    margin: 0;
-                    padding: 0;
-                    text-align: center;
-                }
-        
-                .container {
-                    max-width: 600px;
-                    margin: 0 auto;
-                    background-color: #ffffff;
-                    padding: 20px;
-                    border-radius: 8px;
-                    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-                }
-        
-                .header img {
-                    width: 100%;
-                    max-width: 300px;
-                    height: auto;
-                    margin-bottom: 20px;
-                }
-        
-                .promo-text {
-                    color: #333;
-                    font-size: 18px;
-                    line-height: 1.6;
-                    margin-bottom: 20px;
-                }
-        
-                .cta-button {
-                    display: inline-block;
-                    background-color: #3498db;
-                    color: #fff;
-                    text-decoration: none;
-                    padding: 10px 20px;
-                    font-size: 16px;
-                    border-radius: 5px;
-                }
-            </style>
-        </head>
         
         <body>
-            <div class="container">               
+            <div class="container">
+                <style>
+                    .content,            
+                    .footer {                        
+                        margin: 0;
+                        padding: 0;
+                        text-align: center;
+                    }
+                    .ketentuan,.header {                
+                        margin: 0;
+                        padding: 0;
+                        
+                    }
+        
+                    .container {
+                        max-width: 600px;
+                        margin: 0 auto;
+                        background-color: #ffffff;
+                        padding: 20px;
+                        border-radius: 8px;
+                        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                    }
+        
+                    .header img {
+                        width: 100%;
+                        max-width: 300px;
+                        height: auto;
+                        margin-bottom: 20px;
+                    }
+        
+                    .promo-text {
+                        color: #333;
+                        font-size: 18px;
+                        line-height: 1.6;
+                        margin-bottom: 20px;
+                    }
+        
+                    .cta-button {
+                        display: inline-block;
+                        background-color: #3498db;
+                        color: #fff;
+                        text-decoration: none;
+                        padding: 10px 20px;
+                        font-size: 16px;
+                        border-radius: 5px;
+                    }
+                </style>
         
                 <div class="content">
                     <h2>Halo Lukman Nugraha</h2>
-                    <p class="promo-text">Anda mendapatkan E-voucher ongkir sebesar 10.000 yang bisa gunakan dengan ketentuan</p>
+                    <p class="promo-text">Selamat Anda mendapatkan E-Voucher Ongkir sebesar Rp. 10.000,- dari Program "GARANSI
+                        ONGKIR KEMBALI" JNE Cabang Utama Bandung. </p>
                 </div>
-                <ul>
-                    <li>Berlaku hingga 5 Maret 2024</li>
-                    <li>Hanya bisa digunakan 1 kali transaksi</li>
-                    <li>Tidak ada pengembalian uang jika voucher melebihi harga ongkir</li>
-                </ul>
+                <div class="ketentuan">
+                    <ol>
+                        <li>E-Voucher Ongkir berlaku hingga 5 Maret 2024</li>
+                        <li>E-Voucher Ongkir hanya berlaku untuk Kiriman Dalam Kota/Kabupaten dengan Service CTCREG dan CTCYES</li>
+                        <li>E-Voucher Ongkir hanya bisa digunakan untuk 1 (satu) kali transaksi</li>
+                        <li>Tidak ada Pengembalian Uang jika E-Voucher melebihi Harga Ongkos Kirim</li>
+                        <li>Jika pada saat melakukan Transaksi Pengiriman Total Ongkos Kirim melebihi dari nilai E-Voucher maka
+                            customer Wajib menambah Ongkos Kirim sesuai dengan kekurangannya.</li>
+                        <li>Penggunaan E-Voucher Ongkir tidak dapat digabung dengan program/promo lainnya.</li>
+                    </ol>
+                </div>
         
                 <div class="footer">
-                    <p>Segera gunakan E-Voucher dengan kode adfkkafdjafierala di seluruh Agen Bandung Raya<br>Tim Promosi Voucher</p>
+                    <p>
+                        Segera gunakan E-Voucher Ongkir dengan kode <b style="font-size: larger;background-color: yellow;">SENUbvExd5KRvyzu</b> di seluruh Sales Counter JNE Kantor
+                        Cabang Utama Bandung.</p>
+        
+                    Tim Promotion E-Voucher JNE Bandung
                 </div>
             </div>
         </body>
         
         </html>
         ';
-        // $output .= 'Testing Email';
+        // $output = '
+        
+   
 
         $conn = [
             'protocol' => 'smtp',
@@ -204,9 +221,12 @@ class Auth extends CI_Controller
 
         $this->load->library('email', $conn);
 
-        $this->email->from('bdo.itproject@jne.co.id', 'VOUCHER');
-        $this->email->to('lukman.nugraha@jne.co.id');
-        $this->email->subject('Promotion');
+        $this->email->from('bdo.itproject@jne.co.id', 'JNE BANDUNG');
+        // $this->email->to('lukman.nugraha@jne.co.id');
+        // $this->email->to('vidyana.rosalina@jne.co.id');
+        // $this->email->to('enzo.edogawa15@gmail.com');
+        $this->email->to('iqipulla123@gmail.com');
+        $this->email->subject('Selamat Anda mendapatkan E-Voucher Ongkir dari JNE Bandung');
         $this->email->message($output);
         // $this->email->send();
         if ($this->email->send()) {

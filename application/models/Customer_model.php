@@ -18,7 +18,7 @@ class Customer_model extends CI_Model
     public function getImportData()
     {
         $this->db->order_by('date', 'DESC');
-        $today = date('Y-m-d');        
+        $today = date('Y-m-d');
         $this->db->where('DATE(date)', $today);
         $query = $this->db->get('customers');
         return $query->result();
@@ -52,43 +52,55 @@ class Customer_model extends CI_Model
         return $result;
     }
 
+    public function reedem_voucher()
+    {
+        $id_user = $this->session->userdata('id_user');
+        // Menggunakan data dari input dan id_user untuk melakukan pembaruan
+        $otp = $this->generate_otp($this->input->post('id'));
+        $data = array(
+            'awbno_claim' => $this->input->post('resi'),
+            'id_user' => $id_user,
+        );
+
+        $this->db->where('id', $this->input->post('id'));
+        $this->db->update('customers', $data);
+
+        // Periksa apakah pembaruan berhasil
+        return $otp;
+        // return true;
+    }
     // public function reedem_voucher()
     // {
     //     $id_user = $this->session->userdata('id_user');
-
     //     // Menggunakan data dari input dan id_user untuk melakukan pembaruan
+    //     $otp = $this->generate_otp($this->input->post('id'));
     //     $data = array(
     //         'awbno_claim' => $this->input->post('resi'),
-    //         'id_user' => $id_user            
+    //         'id_user' => $id_user,
     //     );
 
     //     $this->db->where('id', $this->input->post('id'));
     //     $this->db->update('customers', $data);
-    //     return true;
+
+    //     // Periksa apakah pembaruan berhasil
+    //     return $this->db->affected_rows() > 0;
+    //     // return true;
     // }
-    public function reedem_voucher()
+   
+    public function generate_otp($id)
     {
-        $id_user = $this->session->userdata('id_user');
+        $otp_length = 6;
+        $otp = "";
 
-        // Menggunakan data dari input dan id_user untuk melakukan pembaruan
-        // Memastikan bahwa id_user yang diambil dari sesi adalah nilai yang valid
-        if ($id_user) {
-            // Menggunakan data dari input dan id_user untuk melakukan pembaruan
-            $data = array(
-                'awbno_claim' => $this->input->post('resi'),
-                'id_user' => $id_user
-                //Tambahkan kolom lain yang perlu diperbarui jika ada
-            );
-
-            // Melakukan pembaruan pada tabel customers
-            $this->db->where('id', $this->input->post('id'));
-            $this->db->update('customers', $data);
-
-            return true;
-        } else {
-            // Jika id_user tidak valid, mungkin perlu mengatasi atau memberikan pesan kesalahan
-            return false;
+        for ($i = 0; $i < $otp_length; $i++) {
+            $otp .= rand(0, 9);
         }
+
+        $data = array('otp' => $otp);
+        $this->db->where('id', $id);
+        $this->db->update('customers', $data);
+
+        return $otp;
     }
 
     public function getUsedVoucher()

@@ -1,146 +1,221 @@
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
-<link rel="stylesheet" href="https://cdn.datatables.net/select/1.7.0/css/select.dataTables.min.css">
-<!-- select table -->
-<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
-<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/select/1.7.0/js/dataTables.select.min.js"></script>
-
-<div class="card shadow mb-4">
-
-    <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">Voucher Data</h6>
+<form id="filterForm">
+    <div class="form-row">
+        <div class="form-group col-md-5">
+            <label for="dateFrom">From:</label>
+            <input type="date" class="form-control" id="dateFrom" name="dateFrom" value="<?= date('Y-m-d') ?>">
+        </div>
+        <div class="form-group col-md-5">
+            <label for="dateThru">Thru:</label>
+            <input type="date" class="form-control" id="dateThru" name="dateThru" value="<?= date('Y-m-d') ?>">
+        </div>
+        <!-- <div class="form-group col-md-2">                
+                <button type="button" class="btn btn-primary" onclick="filterData()">Filter</button>
+            </div> -->
     </div>
-    <div class="card-body">
+</form>
+<!-- Tambahkan modal ke halaman HTML -->
+<div class="modal fade" id="editEmailModal" tabindex="-1" role="dialog" aria-labelledby="editEmailModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editEmailModalLabel">Edit Email</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="editEmailForm">
+                    <div class="form-group">
+                        <label for="new_email">New Email:</label>
+                        <input type="email" class="form-control" id="new_email" name="new_email" required>
+                    </div>
+                    <input type="hidden" id="customer_id" name="customer_id">
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
+
+<div class="card card-raised">
+    <div class="card-header bg-primary text-white px-4">
+        <div class="d-flex justify-content-between align-item-center">
+            <div class="me-4">
+                <h2 class="card-title text-white mb-0 ">Voucher</h2>
+                <div class="card-subtitile">Details and historty</div>
+            </div>
+
+        </div>
+    </div>
+    <div class="card-body p-4">
+        <input type="hidden" name="status" id="status" value="">
+        <!-- Tambahkan ini di atas tabel -->
+
+        <div class="mb-3">
+            <button type="button" class="btn btn-primary" id="getSelectedEmails" data-email="example@email.com">
+                Kirim Email</button>
+        </div>
         <div class="table-responsive">
-            <table id="emailTable" class="display" width="100%" cellspacing="0">
+            <table id="voucher" class="table table-bordered" width="100%" cellspacing="0">
                 <thead>
                     <tr>
-                        <th></th>
+                        <th>
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="selectAll">
+                                <label class="form-check-label" for="selectAll"></label>
+                            </div>
+                        </th>
                         <th>No</th>
                         <th>Nama Pengirim</th>
                         <th>Email</th>
-                        <th>No Tlp</th>
-                        <th>Harga Ongkir</th>
+                        <th>No. Telepon</th>
+                        <th>Harga</th>
                         <th>AWB no</th>
+                        <th>Status</th>
                         <th>Service</th>
                         <th>E-Voucher</th>
+                        <th>Status Email</th>
                     </tr>
                 </thead>
-                <tbody id="dataBody">
-                    <?php $counter = 1; ?>
-                    <?php foreach ($voucher_data as $voucher): ?>
-                        <tr>
-                            <td></td> <!-- No Urut column will be filled dynamically in JavaScript -->
-                            <td></td> <!-- No Urut column will be filled dynamically in JavaScript -->
-                            <td>
-                                <?php echo $voucher->customer_name ?>
+                <tbody>
 
-                            </td>
-                            <td>
-                                <?php echo $voucher->email; ?>
-                            </td>
-                            <td>
-                                <?php echo $voucher->no_hp; ?>
-
-                            </td>
-                            <td>
-                                <?php echo $voucher->harga; ?>
-                            </td>
-                            <td>
-                                <?php echo $voucher->awb_no; ?>
-
-
-                            </td>
-                            <td>
-                                <?php echo $voucher->service; ?>
-
-                            </td>
-                            <td>
-                                <?php echo $voucher->voucher; ?>
-
-                            </td>
-
-                        </tr>
-                        <?php $counter++; ?>
-                    <?php endforeach; ?>
                 </tbody>
             </table>
         </div>
     </div>
 </div>
 
-<script>
+<script src="<?= base_url() ?>public/vendor/jquery/jquery.min.js"></script>
+
+<script type="text/javascript">
+    var table;
+
     $(document).ready(function () {
-        // Initialize DataTable with options
-        var table = $('#dataTable').DataTable({
-            "paging": true,
-            "searching": true,
-            "ordering": true,
-            "info": true,
-            "responsive": true,            
+        //datatables
+        table = $('#voucher').DataTable({
+            "processing": true,
+            "serverSide": true,
+            "ajax": {
+                "url": "<?= base_url('marketing/getdatatables_send_email') ?>",
+                "type": "POST",
+                "data": function (data) {
+                    data.status = $('[name="status"]').val();
+                    data.dateFrom = $('[name="dateFrom"]').val();
+                    data.dateThru = $('[name="dateThru"]').val();
+                }
+            },
+            "columnDefs": [{
+                "targets": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+                "orderable": false
+            },
+            {
+                "targets": [0, 1, 2, 3, 4, 5, 6, 7],
+                "className": 'text-center'
+            },
+            {
+                "targets": 3, // Targeting the Email column
+                "render": function (data, type, row, meta) {
+                    return '<small style="font-size:12px" class="email-cell">' + data + '</small>';
+                }
+            }
+            ]
         });
-        // Custom rendering for No Urut column
-        table.on('order.dt search.dt', function () {
-            table.column(0, {
-                search: 'applied',
-                order: 'applied'
-            }).nodes().each(function (cell, i) {
-                cell.innerHTML = i + 1;
+        $('#selectAll').change(function () {
+            var checked = $(this).prop('checked');
+            $('input:checkbox.data-check').prop('checked', checked);
+        });
+
+        // Tambahkan ini untuk menangani checkbox all
+        $('#voucher tbody').on('change', 'input:checkbox.data-check', function () {
+            $('#selectAll').prop('checked', false);
+        });
+
+      
+        $(document).on('click', '#getSelectedEmails', function () {
+            var selectedEmails = getSelectedEmails();
+
+            if (selectedEmails.length > 0) {
+                sendEmails(selectedEmails);
+            } else {
+                alert('Tidak ada email yang dipilih.');
+            }
+        });
+
+
+        function getSelectedEmails() {
+            var selectedEmails = [];
+            $('#voucher tbody').find('input:checkbox.data-check:checked').each(function () {
+                var email = $(this).closest('tr').find('.email-cell').text();
+                selectedEmails.push(email);
             });
-        }).draw();
-
-        // checkbox
-        columnDefs: [
-        {
-            orderable: false,
-            className: 'select-checkbox',
-            targets: 0
+            return selectedEmails;
         }
-    ],
-    select: {
-        style: 'os',
-        selector: 'td:first-child'
-    },
-    order: [[1, 'asc']]
 
+        function sendEmails(emails) {
+            $.ajax({
+                url: "<?= base_url('marketing/send_emails_dummy') ?>",
+                type: "POST",
+                data: {
+                    selectedEmails: emails
+                },
+                success: function (response) {
+                    alert(response);
+                    reloadData();
+                },
+                error: function (xhr, status, error) {
+                    console.error(xhr.responseText);
+                }
+            });
+        }
+        $('[name="dateFrom"]').on('change', (e) => {
+            $('#status').val('status1');
+            table.ajax.reload();
+        });
+
+        $('[name="dateThru"]').on('change', (e) => {
+            $('#status').val('status1');
+            table.ajax.reload();
+        });
     });
-    
 </script>
 
-<!-- <script>
+<!-- Add this script in your HTML file or view -->
+<script>
+    function editEmail(customerId, currentEmail) {
+        $('#editEmailModal').modal('show');
+        $('#customer_id').val(customerId);
+        $('#current_email').val(currentEmail);
+    }
+</script>
+<!-- Add this script in your HTML file or view -->
+<script>
+    // Fungsi untuk menangani form edit email
+    $(document).ready(function () {
+        $('#editEmailForm').submit(function (e) {
+            e.preventDefault();
+            
+            // Dapatkan data formulir
+            var customerId = $('#customer_id').val();
+            var newEmail = $('#new_email').val();
 
-    let example = $('#emailTable').DataTable({
-        columnDefs: [{
-            orderable: false,
-            className: 'select-checkbox',
-            targets: 0
-        }],
-        select: {
-            style: 'os',
-            selector: 'td:first-child'
-        },
-        order: [
-            [1, 'asc']
-        ]
+            // Lakukan permintaan AJAX untuk memperbarui email
+            $.ajax({
+                type: 'POST',
+                url: "<?= base_url('marketing/update_email') ?>",
+                data: {customer_id: customerId, new_email: newEmail},
+                success: function (data) {
+                   
+                    $('#editEmailModal').modal('hide');
+                    reloadData();
+                    
+                },
+                error: function (error) {
+                    // Handle kesalahan
+                    console.error('Error updating email:', error);
+                }
+            });
+        });
     });
-    example.on("click", "th.select-checkbox", function () {
-        if ($("th.select-checkbox").hasClass("selected")) {
-            example.rows().deselect();
-            $("th.select-checkbox").removeClass("selected");
-        } else {
-            example.rows().select();
-            $("th.select-checkbox").addClass("selected");
-        }
-    }).on("select deselect", function () {
-        ("Some selection or deselection going on")
-        if (example.rows({
-            selected: true
-        }).count() !== example.rows().count()) {
-            $("th.select-checkbox").removeClass("selected");
-        } else {
-            $("th.select-checkbox").addClass("selected");
-        }
-    });
+</script>
 
-</script> -->
