@@ -16,9 +16,9 @@ class Marketing_model extends CI_Model
         $this->db->where('DATE(date) >=', $this->input->post('dateFrom'));
         $this->db->where('DATE(date) <=', $this->input->post('dateThru'));
         $this->db->from('customers');
-    
+
         $i = 0;
-    
+
         if (@$_POST['search']['value']) {
             foreach ($this->customer_column_search as $item) {
                 if ($i === 0) {
@@ -32,7 +32,7 @@ class Marketing_model extends CI_Model
                 $i++;
             }
         }
-    
+
         if (isset($_POST['order'])) {
             $this->db->order_by($this->customer_column_order[$_POST['order']['0']['column']], $_POST['order']['0']['dir']);
         } elseif (isset($this->order)) {
@@ -40,7 +40,7 @@ class Marketing_model extends CI_Model
             $this->db->order_by(key($customer_order), $customer_order[key($customer_order)]);
         }
     }
-    
+
     function getdatatables_email_null_count()
     {
         $this->db->select('*');
@@ -48,9 +48,9 @@ class Marketing_model extends CI_Model
         $this->db->where('DATE(date) >=', $this->input->post('dateFrom'));
         $this->db->where('DATE(date) <=', $this->input->post('dateThru'));
         $this->db->from('customers');
-    
+
         $i = 0;
-    
+
         if (@$_POST['search']['value']) {
             foreach ($this->customer_column_search as $item) {
                 if ($i === 0) {
@@ -64,22 +64,91 @@ class Marketing_model extends CI_Model
                 $i++;
             }
         }
-    
+
         return $this->db->count_all_results();
     }
-    
-    
 
-    function updateEmail($customerId, $newEmail){
-        $data=array(
-            'email'=>$newEmail,
-        );
+
+
+    public function update_email($customerId, $newEmail)
+    {
+        $data = array('email' => $newEmail);
+
         $this->db->where('id', $customerId);
         $this->db->update('customers', $data);
 
-        return $this->db->affected_rows();
-        
+        return $this->db->affected_rows() > 0;
     }
-}
+    private function _getdatatables_marketing()
+    {
+        $this->db->select('*');        
 
+        $status = $this->input->post('status');
+        $dateFrom = $this->input->post('dateFrom');
+        $dateThru = $this->input->post('dateThru');
+
+        switch ($status) {
+            case 'status2':
+                $this->db->where('status', 'Y');
+                break;
+            case 'belumDigunakan':
+                $this->db->where('status', 'N');
+                break;
+            case 'emailDikirim':
+                $this->db->where('status_email', 'Y');
+                break;
+            case 'belumDikirim':
+                $this->db->where('status_email', 'N');
+                break;
+            case 'hangus':
+                $this->db->where('expired_date <', date('Y-m-d'))
+                    ->where('DATE(date) >=', $dateFrom)
+                    ->where('DATE(date) <=', $dateThru);
+                break;
+            case 'status4':
+                // Handle status4 case if needed
+                break;
+        }
+
+        $this->db->where('DATE(date) >=', $dateFrom)
+            ->where('DATE(date) <=', $dateThru);
+
+        $this->db->from('customers');
+
+        $i = 0;
+
+        if (@$_POST['search']['value']) {
+            foreach ($this->customer_column_search as $item) {
+                if ($i === 0) {
+                    $this->db->group_start()
+                        ->like($item, $_POST['search']['value']);
+                } else {
+                    $this->db->or_like($item, $_POST['search']['value']);
+                }
+                if (count($this->customer_column_search) - 1 == $i) {
+                    $this->db->group_end();
+                }
+                $i++;
+            }
+        }
+
+        if (isset($_POST['order'])) {
+            $this->db->order_by($this->customer_column_order[$_POST['order']['0']['column']], $_POST['order']['0']['dir']);
+        } elseif (isset($this->order)) {
+            $customer_order = $this->order;
+            $this->db->order_by(key($customer_order), $customer_order[key($customer_order)]);
+        }
+    }
+
+    function getdatatables_marketing()
+    {
+        $this->_getdatatables_marketing();
+        if (@$_POST['length'] != -1)
+            $this->db->limit(@$_POST['length'], @$_POST['start']);
+        $query = $this->db->get();
+        return $query->result();
+    }
+
+
+}
 ?>

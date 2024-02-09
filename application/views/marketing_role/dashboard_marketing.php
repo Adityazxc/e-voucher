@@ -125,7 +125,7 @@
 </div>
 
 <div class="card shadow mb-4">
-<div class="card-header bg-primary text-white px-4">
+    <div class="card-header bg-primary text-white px-4">
         <div class="d-flex justify-content-between align-item-center">
             <div class="me-4">
                 <h2 class="card-title text-white mb-0 ">Voucher</h2>
@@ -213,32 +213,46 @@
 
 <script type="text/javascript">
     var table;
-    $(document).ready(function () {
-        //datatables
-        table = $('#voucher').DataTable({
-            "processing": true,
-            "serverSide": true,
-            "ajax": {
-                "url": "<?= base_url('marketing/getdatatables_customer') ?>",
-                "type": "POST",
-                "data": function (data) {
-                    data.status = $('[name="status"]').val();
-                    data.dateFrom = $('[name="dateFrom"]').val();
-                    data.dateThru = $('[name="dateThru"]').val();
-                }
-            },
-            "columnDefs": [{
-                "targets": [0, 1, 2, 3, 4, 5, 6, 7, 8,9],
-                "orderable": false
-            },
-            {
-                "targets": [0, 1, 2, 3, 4, 5, 6],
-                "className": 'text-center'
+    var table;
+
+$(document).ready(function () {
+    // datatables
+    table = $('#voucher').DataTable({
+        "processing": true,
+        "serverSide": true,
+        "ajax": {
+            "url": "<?= base_url('marketing/getdatatables_customer') ?>",
+            "type": "POST",
+            "data": function (data) {
+                data.status = $('[name="status"]').val();
+                data.dateFrom = $('[name="dateFrom"]').val();
+                data.dateThru = $('[name="dateThru"]').val();
             }
-            ]
-        });
-        jumlah();
+        },
+        "columnDefs": [{
+            "targets": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+            "orderable": false
+        },
+        {
+            "targets": [0, 1, 2, 3, 4, 5, 6],
+            "className": 'text-center'
+        }],
+        "buttons": [
+            'copy', 'csv', 'excel', 'pdf', 'print'
+        ]
     });
+
+    // Initialize the DataTables Buttons extension
+    new $.fn.dataTable.Buttons(table, {
+        buttons: [
+            'copy', 'csv', 'excel', 'pdf', 'print'
+        ]
+    }).container().appendTo($('.dataTables_length:eq(0)', table.table().container()));
+
+    jumlah();
+});
+
+
     $('[name="dateFrom"]').on('change', (e) => {
         $('#status').val('status1');
         table.ajax.reload();
@@ -258,13 +272,13 @@
     }
 
     function btnBelumDikirim() {
-        $('#status').val('emailDikirim');
+        $('#status').val('belumDikirim');
         table.ajax.reload();
         jumlah();
     }
 
     function btnstatus3() {
-        $('#status').val('status2');
+        $('#status').val('belumDigunakan');
         table.ajax.reload();
         jumlah();
     }

@@ -235,8 +235,17 @@
                 "targets": [0, 1, 2, 3, 4, 5, 6],
                 "className": 'text-center'
             }
+            ],
+            "buttons": [
+                'copy', 'csv', 'excel', 'pdf', 'print'
             ]
         });
+        new $.fn.dataTable.Buttons(table, {
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ]
+        }).container().appendTo($('.dataTables_length:eq(0)', table.table().container()));
+
         jumlah();
     });
     $('[name="dateFrom"]').on('change', (e) => {
