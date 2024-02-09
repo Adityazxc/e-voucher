@@ -13,29 +13,6 @@
             </div> -->
     </div>
 </form>
-<!-- Tambahkan modal ke halaman HTML -->
-<div class="modal fade" id="editEmailModal" tabindex="-1" role="dialog" aria-labelledby="editEmailModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="editEmailModalLabel">Edit Email</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form id="editEmailForm">
-                    <div class="form-group">
-                        <label for="new_email">New Email:</label>
-                        <input type="email" class="form-control" id="new_email" name="new_email" required>
-                    </div>
-                    <input type="hidden" id="customer_id" name="customer_id">
-                    <button type="submit" class="btn btn-primary">Save Changes</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
 
 
 <div class="card card-raised">
@@ -52,8 +29,9 @@
         <input type="hidden" name="status" id="status" value="">
         <!-- Tambahkan ini di atas tabel -->
 
+        <form action="<?= base_url('marketing/test_checkbox')?>" method="POST">
         <div class="mb-3">
-            <button type="button" class="btn btn-primary" id="getSelectedEmails" data-email="example@email.com">
+            <button type="submit" class="btn btn-primary" id="getSelectedEmails" data-email="example@email.com">
                 Kirim Email</button>
         </div>
         <div class="table-responsive">
@@ -82,7 +60,10 @@
 
                 </tbody>
             </table>
+
         </div>
+        
+        </form>
     </div>
 </div>
 
@@ -121,6 +102,8 @@
             }
             ]
         });
+
+        // checkbox
         $('#selectAll').change(function () {
             var checked = $(this).prop('checked');
             $('input:checkbox.data-check').prop('checked', checked);
@@ -130,8 +113,8 @@
         $('#voucher tbody').on('change', 'input:checkbox.data-check', function () {
             $('#selectAll').prop('checked', false);
         });
+        // end checkbox
 
-      
         $(document).on('click', '#getSelectedEmails', function () {
             var selectedEmails = getSelectedEmails();
 
@@ -142,32 +125,7 @@
             }
         });
 
-
-        function getSelectedEmails() {
-            var selectedEmails = [];
-            $('#voucher tbody').find('input:checkbox.data-check:checked').each(function () {
-                var email = $(this).closest('tr').find('.email-cell').text();
-                selectedEmails.push(email);
-            });
-            return selectedEmails;
-        }
-
-        function sendEmails(emails) {
-            $.ajax({
-                url: "<?= base_url('marketing/send_emails_dummy') ?>",
-                type: "POST",
-                data: {
-                    selectedEmails: emails
-                },
-                success: function (response) {
-                    alert(response);
-                    reloadData();
-                },
-                error: function (xhr, status, error) {
-                    console.error(xhr.responseText);
-                }
-            });
-        }
+        // datefrom and date thru
         $('[name="dateFrom"]').on('change', (e) => {
             $('#status').val('status1');
             table.ajax.reload();
@@ -177,45 +135,22 @@
             $('#status').val('status1');
             table.ajax.reload();
         });
+
+        // end datefrom and date thru
+
     });
 </script>
 
-<!-- Add this script in your HTML file or view -->
 <script>
-    function editEmail(customerId, currentEmail) {
-        $('#editEmailModal').modal('show');
-        $('#customer_id').val(customerId);
-        $('#current_email').val(currentEmail);
-    }
-</script>
-<!-- Add this script in your HTML file or view -->
-<script>
-    // Fungsi untuk menangani form edit email
-    $(document).ready(function () {
-        $('#editEmailForm').submit(function (e) {
-            e.preventDefault();
-            
-            // Dapatkan data formulir
-            var customerId = $('#customer_id').val();
-            var newEmail = $('#new_email').val();
+ function editEmail(id) {
+    // Fetch the ID and name of the selected customer
+    var customerId = id;
 
-            // Lakukan permintaan AJAX untuk memperbarui email
-            $.ajax({
-                type: 'POST',
-                url: "<?= base_url('marketing/update_email') ?>",
-                data: {customer_id: customerId, new_email: newEmail},
-                success: function (data) {
-                   
-                    $('#editEmailModal').modal('hide');
-                    reloadData();
-                    
-                },
-                error: function (error) {
-                    // Handle kesalahan
-                    console.error('Error updating email:', error);
-                }
-            });
-        });
-    });
+    console.log(customerId);
+    // Redirect to the edit_email_page with customerId as a query parameter
+    window.location.href = "<?= base_url('marketing/edit_send_email') ?>?customerId=" + customerId;
+}
+
+
 </script>
 

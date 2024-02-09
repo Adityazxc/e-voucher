@@ -53,3 +53,4 @@ $route['default_controller'] = 'ccc';
 
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
+$route['marketing/hahaha'] = 'marketing/test_checkbox';

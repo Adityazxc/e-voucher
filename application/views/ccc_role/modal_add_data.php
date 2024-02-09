@@ -17,7 +17,7 @@
                     </div>                             
                     <div class="form-group">
                         <label for="awb_no">No Awb:</label>
-                        <input type="text" class="form-control" id="awb_no" name="awb_no" required>
+                        <input type="text" class="form-control" pattern="\d{16}" id="awb_no" title="Please enter a 16-digit number"name="awb_no" required>
                     </div>
                     <div class="form-group">
                         <label for="email">Email:</label>

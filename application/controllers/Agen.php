@@ -41,47 +41,74 @@ class Agen extends CI_Controller
     public function search_customer()
     {
         $this->load->model('Customer_model');
-
-        // Mendapatkan kata kunci pencarian dari formulir atau input pengguna
         $keyword = $this->input->post('search_keyword');
-
-        // Memanggil metode searchCustomer dari model
         $search_result = $this->Customer_model->searchCustomer($keyword);
-
-        // Menyimpan hasil pencarian ke dalam data yang akan dikirim ke view
         $data['search_result'] = $search_result;
-
-        // Menyimpan kata kunci pencarian untuk ditampilkan kembali di form
         $data['search_keyword'] = $keyword;
-
-        // Memanggil fungsi redeem() dan menyertakan data hasil pencarian
         $this->redeem($data);
+    }
+    public function otp($idCustomer)
+    {
+        $data['title'] = 'Redeem Voucher';
+        $data['page_name'] = 'otp';
+        $data['role'] = 'Agen';
+        $data['voucher_data'] = $this->Customer_model->getVoucherData();
+        $data['customer_id'] = $idCustomer;
+        echo '<pre>';
+        print_r($data['customer_id']);
+        echo '</pre>';
+        $this->load->view('dashboard', $data);
     }
 
     // Agen.php (controller)
+
+
     public function reedem_voucher()
     {
+        $idCustomer = $this->input->post('id');    
         $otp = '';
-        $reedem_voucher = $this->customer_model->reedem_voucher();
-
+        $reedem_voucher = $this->Customer_model->reedem_voucher();        
         if ($this->input->post('gunakan_btn')) {
-            $otp = $this->customer_model->generate_otp($this->input->post('id'));
+        $otp = $this->customer_model->generate_otp($idCustomer);
         }
-
         if ($reedem_voucher == true) {
             // Proses selanjutnya setelah voucher berhasil diredeem
             $this->session->set_flashdata('success', 'Voucher berhasil diredeem');
-            redirect(base_url('agen/search_customer'));
+            // echo '<pre>';
+            // print_r($idCustomer);
+            // echo '</pre>';
+            redirect(base_url('agen/otp/' . $idCustomer));
         } else {
             // Proses selanjutnya jika voucher tidak berhasil diredeem
             $this->session->set_flashdata('error', 'Gagal redeem voucher');
             redirect(base_url('agen/search_customer'));
         }
     }
+    // public function reedem_voucher()
+    // {
+    //     $otp = '';
+    //     $reedem_voucher = $this->customer_model->reedem_voucher();
 
-    // Customer_model.php
+    //     if ($this->input->post('gunakan_btn')) {
+    //         $otp = $this->customer_model->generate_otp($this->input->post('id'));
+    //     }
+
+    //     if ($reedem_voucher == true) {
+    //         // Proses selanjutnya setelah voucher berhasil diredeem
+    //         $this->session->set_flashdata('success', 'Voucher berhasil diredeem');
+    //         redirect(base_url('agen/otp'));
+    //     } else {
+    //         // Proses selanjutnya jika voucher tidak berhasil diredeem
+    //         $this->session->set_flashdata('error', 'Gagal redeem voucher');
+    //         redirect(base_url('agen/search_customer'));
+    //     }
+    // }
+
     public function validate_otp($id, $otp_input)
     {
+        // $id = $this->input->post('id');
+        // $otp_input = $this->input->post('otp_input');
+
         // Ambil OTP dari database
         $this->db->select('otp');
         $this->db->where('id', $id);
@@ -89,8 +116,25 @@ class Agen extends CI_Controller
         $result = $query->row();
 
         // Validasi OTP
-        return ($result && $result->otp == $otp_input);
+        if ($result && $result->otp == $otp_input) {
+            echo 'true'; // atau berikan respons lain sesuai kebutuhan Anda
+        } else {
+            echo 'false'; // atau berikan respons lain sesuai kebutuhan Anda
+        }
     }
+
+    // Customer_model.php
+    // public function validate_otp($id, $otp_input)
+    // {
+    //     // Ambil OTP dari database
+    //     $this->db->select('otp');
+    //     $this->db->where('id', $id);
+    //     $query = $this->db->get('customers');
+    //     $result = $query->row();
+
+    //     // Validasi OTP
+    //     return ($result && $result->otp == $otp_input);
+    // }
 
     // public function reedem_voucher()
     // {                     
@@ -138,7 +182,7 @@ class Agen extends CI_Controller
             $row = array();
             $row[] = '<small style="font-size:12px">' . $no . '</small>';
             // $row[] = '<input type="hidden" name="id[]" value="' . $no . '"><input type="checkbox" name="id_customer[]" value="' . @$item->id . '" class="form-check-input ml-2 data-check" id="id_customer">';
-            $row[] = '<small style="font-size:12px">' . $item->customer_name . '</small>';        
+            $row[] = '<small style="font-size:12px">' . $item->customer_name . '</small>';
             $row[] = '<small style="font-size:12px">' . $item->harga . '</small>';
             $row[] = '<small style="font-size:12px">' . $item->awb_no . '</small>';
             $row[] = '<small style="font-size:12px">' . $status . '</small>';

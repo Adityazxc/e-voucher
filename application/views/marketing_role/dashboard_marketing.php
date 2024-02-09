@@ -93,7 +93,7 @@
                     <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
                             Hangus</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800 totalstatus4"></div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800 totalHangus"></div>
                     </div>
                     <button class="btn btn-default btn-icon" onclick="btnstatus4()">
                         <div class="col-auto">
@@ -174,7 +174,7 @@
         $('.totalEmailDikirim').text('Tunggu.');
         $('.totalBelumDikirim').text('Tunggu.');
         $('.totalstatus3').text('Tunggu.');
-        $('.totalstatus4').text('Tunggu.');
+        $('.totalHangus').text('Tunggu.');
         $('.totalstatus5').text('Tunggu.');
         $.ajax({
             url: "<?= base_url('marketing/summary_customer') ?>",
@@ -186,7 +186,7 @@
                 $('.totalEmailDikirim').text(r.sum_email_dikirim);
                 $('.totalBelumDikirim').text(r.sum_belum_dikirim);
                 $('.totalstatus3').text(r.sum_status3);
-                $('.totalstatus4').text(r.sum_status4);
+                $('.totalHangus').text(r.sum_hangus);
                 $('.totalPengeluaran').text(formatRupiah(r.sum_status5));
 
 
@@ -258,13 +258,13 @@
     }
 
     function btnBelumDikirim() {
-        $('#status').val('belumDikirim');
+        $('#status').val('emailDikirim');
         table.ajax.reload();
         jumlah();
     }
 
     function btnstatus3() {
-        $('#status').val('status3');
+        $('#status').val('status2');
         table.ajax.reload();
         jumlah();
     }

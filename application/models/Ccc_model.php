@@ -29,7 +29,7 @@ class Ccc_model extends CI_Model
             $this->db->where('status_email', 'Y');
             break;
         case 'belumDikirim':
-            $this->db->where('status_email', null);
+            $this->db->where('status_email !=', 'Y');
             break;
         case 'hangus':
             $this->db->where('expired_date <', date('Y-m-d'))
@@ -228,7 +228,7 @@ class Ccc_model extends CI_Model
     private function _getdatatables_marketing()
     {
         $this->db->select('*');
-        $this->db->where('status_email',null);
+        $this->db->where('status_email','N');
         
         $status = $this->input->post('status');
         $dateFrom = $this->input->post('dateFrom');
@@ -306,5 +306,8 @@ class Ccc_model extends CI_Model
 
         return $this->db->affected_rows();
     }
+
+   
 }
+
 ?>

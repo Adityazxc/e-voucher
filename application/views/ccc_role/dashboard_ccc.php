@@ -115,11 +115,9 @@
                             Total</div>
                         <div class="h5 mb-0 font-weight-bold text-gray-800 totalstatus5"></div>
                     </div>
-                    <button class="btn btn-default btn-icon" onclick="btnstatus5()">
-                        <div class="col-auto">
-                            <i class="fas fa-calendar fa-2x text-gray-300"></i>
-                        </div>
-                    </button>
+                    <div class="col-auto">
+                        <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                    </div>
                 </div>
             </div>
         </div>
@@ -272,7 +270,7 @@
     }
 
     function btnstatus4() {
-        $('#status').val('status4');
+        $('#status').val('hangus');
         table.ajax.reload();
         jumlah();
     }

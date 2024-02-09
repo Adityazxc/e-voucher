@@ -1,4 +1,5 @@
 <?php
+use PHPStan\PhpDocParser\Ast\PhpDoc\TypeAliasImportTagValueNode;
 
 defined('BASEPATH') or exit('No direct script access allowed');
 // require APPPATH . 'third_party/PHPExcel/PHPExcel.php';
@@ -11,6 +12,8 @@ class Marketing extends CI_Controller
         parent::__construct();
         $this->load->model('Customer_model');
         $this->session->set_userdata('pages', 'marketing_role');
+        $this->load->library('session');
+        $this->load->helper('url');
         // $this->load->library('email');
     }
 
@@ -28,13 +31,29 @@ class Marketing extends CI_Controller
     }
     public function send_email()
     {
-
+        if ($this->session->userdata('role') == "Marketing") {
+            $data['title'] = 'Dashboard Marketing';
+            $data['page_name'] = 'send_email';
+            $data['role'] = 'Marketing';
+            $data['voucher_data'] = $this->Customer_model->getVoucherData();
+            $this->load->view('dashboard', $data);
+        } else {
+            echo "404";
+        }
+    }
+    public function edit_send_email()
+    {
+        $customerId = $this->input->get('customerId');
+        // $customerName = $this->Customer_model->getCustomerNameById($customerId);
+        // $customerName = $this->input->get('customerId');
         $data['title'] = 'Dashboard Marketing';
-        $data['page_name'] = 'send_email';
+        $data['page_name'] = 'edit_email';
         $data['role'] = 'Marketing';
+        $data['customerId'] = $customerId;
         $data['voucher_data'] = $this->Customer_model->getVoucherData();
         $this->load->view('dashboard', $data);
     }
+
 
     public function search_customer()
     {
@@ -87,9 +106,9 @@ class Marketing extends CI_Controller
             } else {
                 $status = 'Telah dipakai';
             }
-            if ($item->status_email === null) {
+            if ($item->status_email == 'Y') {
                 $status_email = 'Belum dikirim';
-            } elseif ($item->status_email == 'Y') {
+            } elseif ($item->status_email == 'N') {
                 $status_email = 'Sudah terkirim';
             }
             $no++;
@@ -127,7 +146,7 @@ class Marketing extends CI_Controller
         $this->db->where('DATE(date) <=', $this->input->post('dateThru'));
         $total_email_dikirim = $this->db->get('customers')->num_rows();
 
-        $this->db->where('status_email', null);
+        $this->db->where('status_email', 'N');
         $this->db->where('DATE(date) >=', $this->input->post('dateFrom'));
         $this->db->where('DATE(date) <=', $this->input->post('dateThru'));
         $total_belum_dikirim = $this->db->get('customers')->num_rows();
@@ -136,6 +155,11 @@ class Marketing extends CI_Controller
         $this->db->where('DATE(date) >=', $this->input->post('dateFrom'));
         $this->db->where('DATE(date) <=', $this->input->post('dateThru'));
         $customers_status3 = $this->db->get('customers')->num_rows();
+
+        $this->db->where('expired_date <', date('Y-m-d'));
+        $this->db->where('DATE(date) >=', $this->input->post('dateFrom'));
+        $this->db->where('DATE(date) <=', $this->input->post('dateThru'));
+        $total_hangus = $this->db->get('customers')->num_rows();
 
         $this->db->where('status', 'N');
         $this->db->where('DATE(date) >=', $this->input->post('dateFrom'));
@@ -153,6 +177,7 @@ class Marketing extends CI_Controller
         echo json_encode([
             'sum_email_dikirim' => $total_email_dikirim,
             'sum_belum_dikirim' => $total_belum_dikirim,
+            'sum_hangus' => $total_hangus,
             // 'sum_status1' => $customers_status1,
             // 'sum_status2' => $customers_status2,
             'sum_status3' => $customers_status3,
@@ -173,7 +198,7 @@ class Marketing extends CI_Controller
             } else {
                 $status = 'Telah dipakai';
             }
-            if ($item->status_email === null) {
+            if ($item->status_email == 'N') {
                 $status_email = 'Belum dikirim';
             } elseif ($item->status_email == 'Y') {
                 $status_email = 'Sudah terkirim';
@@ -227,39 +252,46 @@ class Marketing extends CI_Controller
             echo 'Tidak ada email yang dipilih atau email null.';
         }
     }
-    // public function send_emails()
-    // {
-    //     $selectedEmails = $this->input->post('selectedEmails');
-
-    //     if (!empty($selectedEmails)) {
-    //         foreach ($selectedEmails as $email) {
-    //             if (!empty($email)) {
-    //                 $this->kirim_email($email);
-
-    //                 $this->db->where('email', $email);
-    //                 $this->db->update('customers', array('status_email' => 'Y'));
-    //             }
-    //         }
-    //         echo 'Email berhasil dikirim';
-    //     } else {
-    //         echo 'Tidak ada email yang dipilih atau email null.';
-    //     }
-    // }
-    public function update_email()
+    public function send_emails()
     {
-        $customerId = $this->input->post('customer_id');
-        $newEmail = $this->input->post('new_email');
+        $selectedEmails = $this->input->post('selectedEmails');
+        $customerName = $this->input->post('customerName'); // Get the customer's name
+        $voucherInfo = $this->input->post('voucherInfo');
 
-        $this->load->model('Ccc_model'); // Pastikan model sudah di-load
-
-        $affectedRows = $this->ccc_model->updateEmail($customerId, $newEmail);
-
-        if ($affectedRows > 0) {
-            echo 'Email berhasil diperbarui.';
+        if (!empty($selectedEmails)) {
+            foreach ($selectedEmails as $email) {
+                if (!empty($email)) {
+                    $this->kirim_email($email, $customerName, $voucherInfo);
+                    $this->db->where('email', $email);
+                    $this->db->update('customers', array('status_email' => 'Y'));
+                }
+            }
+            echo 'Email berhasil dikirim';
         } else {
-            echo 'Gagal memperbarui email.';
+            echo 'Tidak ada email yang dipilih atau email null.';
         }
     }
+    public function update_email() {
+        $customerId = $this->input->get('customer_id');
+        $newEmail = $this->input->post('newEmail');
+    
+        $data = array('email' => $newEmail);
+    
+        $this->db->where('id', $customerId);
+        $this->db->update('customers', $data);
+    
+        if ($this->db->affected_rows() > 0) {
+            // Jika berhasil memperbarui email
+            echo json_encode(array('status' => 'success', 'message' => 'Email updated successfully.'));
+        } else {
+            // Jika gagal memperbarui email
+            echo json_encode(array('status' => 'error', 'message' => 'Failed to update email.'));
+        }
+    }
+    
+    
+    
+    
 
     public function getdatatables_email_null()
     {
@@ -287,7 +319,7 @@ class Marketing extends CI_Controller
         echo json_encode($output);
     }
 
-    public function kirim_email($recipientEmail)
+    public function kirim_email($recipientEmail, $nama, $voucherCode)
     {
         $output = '<!DOCTYPE html>
         <html lang="id">
@@ -347,14 +379,13 @@ class Marketing extends CI_Controller
                 </style>
         
                 <div class="content">
-                    <h2>Halo Lukman Nugraha</h2>
+                <h2>Halo ' . htmlspecialchars($nama) . '</h2>
                     <p class="promo-text">Selamat Anda mendapatkan E-Voucher Ongkir sebesar Rp. 10.000,- dari Program "GARANSI
                         ONGKIR KEMBALI" JNE Cabang Utama Bandung. </p>
                 </div>
                 <div class="ketentuan">
                     <ol>
-                        <li>E-Voucher Ongkir berlaku hingga 5 Maret 2024</li>
-                        <li>E-Voucher Ongkir hanya berlaku untuk Kiriman Dalam Kota/Kabupaten dengan Service CTCREG dan CTCYES</li>
+                        <li>E-Voucher Ongkir berlaku hingga 5 Maret 2024</li>                        
                         <li>E-Voucher Ongkir hanya bisa digunakan untuk 1 (satu) kali transaksi</li>
                         <li>Tidak ada Pengembalian Uang jika E-Voucher melebihi Harga Ongkos Kirim</li>
                         <li>Jika pada saat melakukan Transaksi Pengiriman Total Ongkos Kirim melebihi dari nilai E-Voucher maka
@@ -365,8 +396,7 @@ class Marketing extends CI_Controller
         
                 <div class="footer">
                     <p>
-                        Segera gunakan E-Voucher Ongkir dengan kode <b style="font-size: larger;background-color: yellow;">SENUbvExd5KRvyzu</b> di seluruh Sales Counter JNE Kantor
-                        Cabang Utama Bandung.</p>
+                    an kode <b style="font-size: larger;background-color: yellow;">' . htmlspecialchars($voucherCode) . '</b> di seluruh Sales Counter JNE Kantor Cabang Utama Bandung.</p>
         
                     Tim Promotion E-Voucher JNE Bandung
                 </div>
@@ -412,5 +442,26 @@ class Marketing extends CI_Controller
 
     }
 
+    public function test_checkbox()
+    {
+        for ($i = 0; $i < count($this->input->post('id_customer')); $i++) {
+            $data['id'] = $this->input->post('id_customer')[$i];
+
+            $customers = $this->db->get_where('customers', ['id' => $this->input->post('id_customer')[$i]]);
+
+            $data['email'] = $customers->row()->email;
+            //manggil yg function email
+
+            $this->kirim_email($customers->row()->email, $customers->row()->customer_name, $customers->row()->voucher);
+
+
+            echo "<pre>";
+            echo print_r($data);
+            echo "</pre>";
+
+        }
+    }
+
 
 }
+

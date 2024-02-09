@@ -78,6 +78,8 @@ class Marketing_model extends CI_Model
         $this->db->update('customers', $data);
 
         return $this->db->affected_rows();
+        
     }
 }
+
 ?>

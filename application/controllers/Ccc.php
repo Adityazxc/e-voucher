@@ -10,8 +10,8 @@ class Ccc extends CI_Controller
         parent::__construct();
         $this->load->model('Customer_model');
         $this->load->library('session');
-        $this->session->set_userdata('pages', 'ccc_role');
         $this->load->helper('url');
+        $this->session->set_userdata('pages', 'ccc_role');
     }
 
 
@@ -226,9 +226,9 @@ class Ccc extends CI_Controller
         $this->db->where('DATE(date) <=', $this->input->post('dateThru'));
         $customers_status3 = $this->db->get('customers')->num_rows();
 
-        $this->db->where('status', 'N');
+        $this->db->where('expired_date <', date('Y-m-d'));
         $this->db->where('DATE(date) >=', $this->input->post('dateFrom'));
-        $this->db->where('expired_date <=', $this->input->post('dateThru'));
+        $this->db->where('DATE(date) <=', $this->input->post('dateThru'));
         $customers_status4 = $this->db->get('customers')->num_rows();
         // echo print_r($this->db->last_query());
 

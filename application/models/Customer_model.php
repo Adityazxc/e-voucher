@@ -4,6 +4,7 @@ class Customer_model extends CI_Model
 {
     public function getVoucherData($dateFrom = null, $dateThru = null)
     {
+        
         $this->db->order_by('date', 'DESC');
         if ($dateFrom) {
             $this->db->where('date >=', $dateFrom);
@@ -51,23 +52,14 @@ class Customer_model extends CI_Model
 
         return $result;
     }
-
-    public function reedem_voucher()
+    public function getCustomerById($id)
     {
-        $id_user = $this->session->userdata('id_user');
-        // Menggunakan data dari input dan id_user untuk melakukan pembaruan
-        $otp = $this->generate_otp($this->input->post('id'));
-        $data = array(
-            'awbno_claim' => $this->input->post('resi'),
-            'id_user' => $id_user,
-        );
+        $this->db->select('*');
+        $this->db->from('customers');
+        $this->db->where('id', $id);
+        $query = $this->db->get();
 
-        $this->db->where('id', $this->input->post('id'));
-        $this->db->update('customers', $data);
-
-        // Periksa apakah pembaruan berhasil
-        return $otp;
-        // return true;
+        return $query->row(); // Mengembalikan satu baris hasil sebagai objek
     }
     // public function reedem_voucher()
     // {
@@ -86,6 +78,24 @@ class Customer_model extends CI_Model
     //     return $this->db->affected_rows() > 0;
     //     // return true;
     // }
+
+    public function reedem_voucher()
+    {
+        $id_user = $this->session->userdata('id_user');
+        // Menggunakan data dari input dan id_user untuk melakukan pembaruan
+        $otp = $this->generate_otp($this->input->post('id'));
+        $data = array(
+            'awbno_claim' => $this->input->post('resi'),
+            'id_user' => $id_user,
+        );
+
+        $this->db->where('id', $this->input->post('id'));
+        $this->db->update('customers', $data);
+
+        // Periksa apakah pembaruan berhasil
+        return $otp;
+        // return true;
+    }
    
     public function generate_otp($id)
     {

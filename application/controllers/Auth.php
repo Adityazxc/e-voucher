@@ -180,8 +180,7 @@ class Auth extends CI_Controller
                 </div>
                 <div class="ketentuan">
                     <ol>
-                        <li>E-Voucher Ongkir berlaku hingga 5 Maret 2024</li>
-                        <li>E-Voucher Ongkir hanya berlaku untuk Kiriman Dalam Kota/Kabupaten dengan Service CTCREG dan CTCYES</li>
+                        <li>E-Voucher Ongkir berlaku hingga 5 Maret 2024</li>                        
                         <li>E-Voucher Ongkir hanya bisa digunakan untuk 1 (satu) kali transaksi</li>
                         <li>Tidak ada Pengembalian Uang jika E-Voucher melebihi Harga Ongkos Kirim</li>
                         <li>Jika pada saat melakukan Transaksi Pengiriman Total Ongkos Kirim melebihi dari nilai E-Voucher maka
