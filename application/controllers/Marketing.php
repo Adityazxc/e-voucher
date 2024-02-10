@@ -271,15 +271,16 @@ class Marketing extends CI_Controller
             echo 'Tidak ada email yang dipilih atau email null.';
         }
     }
-    public function update_email() {
+    public function update_email()
+    {
         $customerId = $this->input->get('customer_id');
         $newEmail = $this->input->post('newEmail');
-    
+
         $data = array('email' => $newEmail);
-    
+
         $this->db->where('id', $customerId);
         $this->db->update('customers', $data);
-    
+
         if ($this->db->affected_rows() > 0) {
             // Jika berhasil memperbarui email
             echo json_encode(array('status' => 'success', 'message' => 'Email updated successfully.'));
@@ -288,10 +289,10 @@ class Marketing extends CI_Controller
             echo json_encode(array('status' => 'error', 'message' => 'Failed to update email.'));
         }
     }
-    
-    
-    
-    
+
+
+
+
 
     public function getdatatables_email_null()
     {
@@ -451,16 +452,28 @@ class Marketing extends CI_Controller
 
             $data['email'] = $customers->row()->email;
             //manggil yg function email
-
+            $this->db->where('id', $this->input->post('id_customer')[$i]);
+            $this->db->update('customers', ['status_email' => 'Y']);
             $this->kirim_email($customers->row()->email, $customers->row()->customer_name, $customers->row()->voucher);
 
-
-            echo "<pre>";
-            echo print_r($data);
-            echo "</pre>";
-
         }
+        redirect('marketing/send_email');
     }
+    // public function test_checkbox()
+    // {
+    //     for ($i = 0; $i < count($this->input->post('id_customer')); $i++) {
+    //         $data['id'] = $this->input->post('id_customer')[$i];
+
+    //         $customers = $this->db->get_where('customers', ['id' => $this->input->post('id_customer')[$i]]);
+
+    //         $data['email'] = $customers->row()->email;
+    //         //manggil yg function email
+
+    //         $this->kirim_email($customers->row()->email, $customers->row()->customer_name, $customers->row()->voucher);
+
+    //     }
+    //     redirect('marketing/send_email');
+    // }
 
 
 }

@@ -125,10 +125,10 @@
 </div>
 
 <div class="card shadow mb-4">
-<div class="card-header bg-primary text-white px-4">
+    <div class="card-header bg-primary text-white px-4">
         <div class="d-flex justify-content-between align-item-center">
             <div class="me-4">
-                <h2 class="card-title text-white mb-0 ">Voucher</h2>
+                <h2 class="card-title text-white mb-0 ">Customers</h2>
                 <div class="card-subtitile">Details and history</div>
             </div>
 
@@ -219,7 +219,7 @@
             "processing": true,
             "serverSide": true,
             "ajax": {
-                "url": "<?= base_url('marketing/getdatatables_customer') ?>",
+                "url": "<?= base_url('marketing/getdatatables_send_email') ?>",
                 "type": "POST",
                 "data": function (data) {
                     data.status = $('[name="status"]').val();
@@ -228,15 +228,25 @@
                 }
             },
             "columnDefs": [{
-                "targets": [0, 1, 2, 3, 4, 5, 6, 7, 8,9],
+                "targets": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
                 "orderable": false
             },
             {
                 "targets": [0, 1, 2, 3, 4, 5, 6],
                 "className": 'text-center'
             }
+            ],
+
+            "buttons": [
+                'copy', 'csv', 'excel', 'pdf', 'print'
             ]
         });
+        new $.fn.dataTable.Buttons(table, {
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ]
+        }).container().appendTo($('.dataTables_length:eq(0)', table.table().container()));
+
         jumlah();
     });
     $('[name="dateFrom"]').on('change', (e) => {

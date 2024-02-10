@@ -128,8 +128,8 @@
     <div class="card-header bg-primary text-white px-4">
         <div class="d-flex justify-content-between align-item-center">
             <div class="me-4">
-                <h2 class="card-title text-white mb-0 ">Voucher</h2>
-                <div class="card-subtitile">Details and historty</div>
+                <h2 class="card-title text-white mb-0 ">Customers</h2>
+                <div class="card-subtitile">Details and history</div>
             </div>
 
         </div>
@@ -235,9 +235,18 @@
                 "targets": [0, 1, 2, 3, 4, 5, 6],
                 "className": 'text-center'
             }
+            ], "buttons": [
+                'copy', 'csv', 'excel', 'pdf', 'print'
             ]
         });
+        new $.fn.dataTable.Buttons(table, {
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ]
+        }).container().appendTo($('.dataTables_length:eq(0)', table.table().container()));
+
         jumlah();
+
     });
     $('[name="dateFrom"]').on('change', (e) => {
         $('#status').val('status1');

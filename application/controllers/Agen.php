@@ -61,29 +61,64 @@ class Agen extends CI_Controller
     }
 
     // Agen.php (controller)
+    public function redeem_voucher()
+{
+    $idCustomer = $this->input->post('id');
 
+    // Assuming you have a method redeemVoucher in your Customer_model
+    $redeem_voucher = $this->Customer_model->redeemVoucher($idCustomer);
 
-    public function reedem_voucher()
-    {
-        $idCustomer = $this->input->post('id');    
-        $otp = '';
-        $reedem_voucher = $this->Customer_model->reedem_voucher();        
-        if ($this->input->post('gunakan_btn')) {
-        $otp = $this->customer_model->generate_otp($idCustomer);
-        }
-        if ($reedem_voucher == true) {
-            // Proses selanjutnya setelah voucher berhasil diredeem
-            $this->session->set_flashdata('success', 'Voucher berhasil diredeem');
-            // echo '<pre>';
-            // print_r($idCustomer);
-            // echo '</pre>';
-            redirect(base_url('agen/otp/' . $idCustomer));
-        } else {
-            // Proses selanjutnya jika voucher tidak berhasil diredeem
-            $this->session->set_flashdata('error', 'Gagal redeem voucher');
-            redirect(base_url('agen/search_customer'));
-        }
+    if ($redeem_voucher) {
+        // Proses selanjutnya setelah voucher berhasil diredeem
+        $this->session->set_flashdata('success', 'Voucher berhasil diredeem');
+    } else {
+        // Proses selanjutnya jika voucher tidak berhasil diredeem
+        $this->session->set_flashdata('error', 'Gagal redeem voucher');
     }
+
+    redirect(base_url('agen/search_customer'));
+}
+
+
+
+    // public function reedem_voucher()
+    // {
+    //     $idCustomer = $this->input->post('id');    
+    //     $otp = '';
+    //     $reedem_voucher = $this->Customer_model->reedem_voucher();        
+
+    //     if ($reedem_voucher == true) {
+    //         // Proses selanjutnya setelah voucher berhasil diredeem
+    //         $this->session->set_flashdata('success', 'Voucher berhasil diredeem');
+    //         redirect(base_url('agen/search_customer'));
+
+    //     } else {
+    //         // Proses selanjutnya jika voucher tidak berhasil diredeem
+    //         $this->session->set_flashdata('error', 'Gagal redeem voucher');
+    //         redirect(base_url('agen/search_customer'));
+    //     }
+    // }
+    // public function reedem_voucher()
+    // {
+    //     $idCustomer = $this->input->post('id');    
+    //     $otp = '';
+    //     $reedem_voucher = $this->Customer_model->reedem_voucher();        
+    //     if ($this->input->post('gunakan_btn')) {
+    //     $otp = $this->customer_model->generate_otp($idCustomer);
+    //     }
+    //     if ($reedem_voucher == true) {
+    //         // Proses selanjutnya setelah voucher berhasil diredeem
+    //         $this->session->set_flashdata('success', 'Voucher berhasil diredeem');
+    //         // echo '<pre>';
+    //         // print_r($idCustomer);
+    //         // echo '</pre>';
+    //         redirect(base_url('agen/otp/' . $idCustomer));
+    //     } else {
+    //         // Proses selanjutnya jika voucher tidak berhasil diredeem
+    //         $this->session->set_flashdata('error', 'Gagal redeem voucher');
+    //         redirect(base_url('agen/search_customer'));
+    //     }
+    // }
     // public function reedem_voucher()
     // {
     //     $otp = '';

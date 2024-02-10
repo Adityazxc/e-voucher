@@ -34,7 +34,8 @@ class Ccc_model extends CI_Model
         case 'hangus':
             $this->db->where('expired_date <', date('Y-m-d'))
                      ->where('DATE(date) >=', $dateFrom)
-                     ->where('DATE(date) <=', $dateThru);
+                     ->where('DATE(date) <=', $dateThru)
+                     ->where('status ', 'N');
             break;
         case 'status4':
             // Handle status4 case if needed

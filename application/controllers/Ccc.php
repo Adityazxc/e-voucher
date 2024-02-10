@@ -10,8 +10,8 @@ class Ccc extends CI_Controller
         parent::__construct();
         $this->load->model('Customer_model');
         $this->load->library('session');
-        $this->load->helper('url');
         $this->session->set_userdata('pages', 'ccc_role');
+        $this->load->helper('url');
     }
 
 
@@ -55,7 +55,7 @@ class Ccc extends CI_Controller
             // Proses data dari $sheetData sesuai kebutuhan
             foreach ($sheetData as $row) {
                 if (
-                    empty($row['B']) ||                    
+                    empty($row['B']) ||
                     empty($row['D']) ||
                     empty($row['E']) ||
                     empty($row['F']) ||
@@ -74,7 +74,7 @@ class Ccc extends CI_Controller
                     'service' => $row['G']
                 );
                 // Check if email is provided, allow null
-            
+
 
 
                 $voucher_code = $this->generateVoucherCode();
@@ -159,8 +159,14 @@ class Ccc extends CI_Controller
             'service' => $this->input->post('service'),
         );
         // Tambahkan tanggal ke dalam array
+        $voucher_code = $this->generateVoucherCode();
+        $customer_data['voucher'] = $voucher_code;
         $customer_data['date'] = date('Y-m-d H:i:s');
+        $customer_data['expired_date'] = date('Y-m-d', strtotime('+30 days'));
+        $customer_data['value_voucher'] = $this->input->post('ongkir');
         $this->Customer_model->tambah($customer_data);
+        $customer_data['status'] = 'N'; // Default status
+        $customer_data['status_email'] = 'N'; // Default status
         $this->session->set_flashdata('notif', '<div class="alert alert-success" role="alert">Data Berhasil ditambahkan <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span><button><div> ');
         redirect(site_url('ccc/view_add_data'), 'refresh');
     }
@@ -226,9 +232,9 @@ class Ccc extends CI_Controller
         $this->db->where('DATE(date) <=', $this->input->post('dateThru'));
         $customers_status3 = $this->db->get('customers')->num_rows();
 
-        $this->db->where('expired_date <', date('Y-m-d'));
+        $this->db->where('status', 'N');
         $this->db->where('DATE(date) >=', $this->input->post('dateFrom'));
-        $this->db->where('DATE(date) <=', $this->input->post('dateThru'));
+        $this->db->where('expired_date <=', $this->input->post('dateThru'));
         $customers_status4 = $this->db->get('customers')->num_rows();
         // echo print_r($this->db->last_query());
 

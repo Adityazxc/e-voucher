@@ -4,7 +4,7 @@ class Customer_model extends CI_Model
 {
     public function getVoucherData($dateFrom = null, $dateThru = null)
     {
-        
+
         $this->db->order_by('date', 'DESC');
         if ($dateFrom) {
             $this->db->where('date >=', $dateFrom);
@@ -79,24 +79,23 @@ class Customer_model extends CI_Model
     //     // return true;
     // }
 
-    public function reedem_voucher()
+    public function redeemVoucher($customerId)
     {
-        $id_user = $this->session->userdata('id_user');
-        // Menggunakan data dari input dan id_user untuk melakukan pembaruan
-        $otp = $this->generate_otp($this->input->post('id'));
+        // Your logic to redeem the voucher and update the status to 'Y'
+        // You may need to adjust this based on your database structure and requirements
+
         $data = array(
-            'awbno_claim' => $this->input->post('resi'),
-            'id_user' => $id_user,
+            'status' => 'Y',  // Update the status to 'Y'
+            // Add other fields if needed
         );
 
-        $this->db->where('id', $this->input->post('id'));
+        $this->db->where('id', $customerId);
         $this->db->update('customers', $data);
 
-        // Periksa apakah pembaruan berhasil
-        return $otp;
-        // return true;
+        // Check if the update was successful
+        return $this->db->affected_rows() > 0;
     }
-   
+
     public function generate_otp($id)
     {
         $otp_length = 6;
