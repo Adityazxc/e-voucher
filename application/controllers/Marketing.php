@@ -11,6 +11,7 @@ class Marketing extends CI_Controller
     {
         parent::__construct();
         $this->load->model('Customer_model');
+        $this->load->model('Marketing_model');
         $this->session->set_userdata('pages', 'marketing_role');
         $this->load->library('session');
         $this->load->helper('url');
@@ -44,8 +45,6 @@ class Marketing extends CI_Controller
     public function edit_send_email()
     {
         $customerId = $this->input->get('customerId');
-        // $customerName = $this->Customer_model->getCustomerNameById($customerId);
-        // $customerName = $this->input->get('customerId');
         $data['title'] = 'Dashboard Marketing';
         $data['page_name'] = 'edit_email';
         $data['role'] = 'Marketing';
@@ -84,19 +83,13 @@ class Marketing extends CI_Controller
         print_r($session_data);
     }
 
-    public function test()
-    {
-        $data['email'] = $this->input->post('email');
-        echo "<pre>";
-        echo print_r($data);
-        echo "</pre>";
-    }
+
 
 
     public function getdatatables_customer()
     {
         // echo $this->input->post('dateFrom');
-        $list = $this->ccc_model->getdatatables_customer();
+        $list = $this->Marketing_model->getdatatables_marketing();
 
         $data = array();
         $no = @$_POST['start'];
@@ -107,9 +100,9 @@ class Marketing extends CI_Controller
                 $status = 'Telah dipakai';
             }
             if ($item->status_email == 'Y') {
-                $status_email = 'Belum dikirim';
-            } elseif ($item->status_email == 'N') {
                 $status_email = 'Sudah terkirim';
+            } elseif ($item->status_email == 'N') {
+                $status_email = 'Belum terkirim';
             }
             $no++;
             $row = array();
@@ -233,24 +226,6 @@ class Marketing extends CI_Controller
             "data" => $data,
         );
         echo json_encode($output);
-    }
-    public function send_emails_dummy()
-    {
-        $selectedEmails = $this->input->post('selectedEmails');
-
-        if (!empty($selectedEmails)) {
-            foreach ($selectedEmails as $email) {
-                if (!empty($email)) {
-                    // $this->kirim_email($email);
-
-                    $this->db->where('email', $email);
-                    $this->db->update('customers', array('status_email' => 'Y'));
-                }
-            }
-            echo 'Email berhasil dikirim';
-        } else {
-            echo 'Tidak ada email yang dipilih atau email null.';
-        }
     }
     public function send_emails()
     {
@@ -443,10 +418,49 @@ class Marketing extends CI_Controller
 
     }
 
+    // public function test_checkbox()
+    // {
+    //     for ($i = 0; $i < count($this->input->post('id_customer')); $i++) {
+    //         $data['id'] = $this->input->post('id_customer')[$i];
+
+    //         $customers = $this->db->get_where('customers', ['id' => $this->input->post('id_customer')[$i]]);
+
+    //         $data['email'] = $customers->row()->email;
+    //         //manggil yg function email
+
+    //         $this->kirim_email($customers->row()->email, $customers->row()->customer_name, $customers->row()->voucher);
+
+
+    //         echo "<pre>";
+    //         echo print_r($data);
+    //         echo "</pre>";
+
+    //     }
+    // }
+
+    public function update_email()
+    {
+        $customerId = $this->input->post('customer_id');
+        $newEmail = $this->input->post('newEmail');
+
+        $this->load->model('Marketing_model'); // Load the model
+
+        $result = $this->Marketing_model->update_email($customerId, $newEmail);
+
+        // Respond based on the result
+        if ($result) {
+            // Redirect to the send_email page upon successful email update
+            redirect('marketing/send_email');
+        } else {
+            echo json_encode(array('status' => 'error', 'message' => 'Failed to update email.'));
+        }
+    }
+
+
     public function test_checkbox()
     {
         for ($i = 0; $i < count($this->input->post('id_customer')); $i++) {
-            $data['id'] = $this->input->post('id_customer')[$i];
+            $customer_id = $this->input->post('id_customer')[$i];
 
             $customers = $this->db->get_where('customers', ['id' => $this->input->post('id_customer')[$i]]);
 
