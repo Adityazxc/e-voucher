@@ -3,7 +3,6 @@
 class Marketing_model extends CI_Model
 {
 
-    // PCRF REGISTRATION
     var $customer_column_order = array(null, 'id', 'date', 'awb_no', 'customer_name', 'harga', 'email', 'no_hp', 'service', null); //set column field database for datatable orderable
     var $customer_column_search = array('id', 'date', 'awb_no', 'customer_name', 'harga', 'email', 'no_hp', 'service'); //set column field database for datatable searchable
     var $customer_order = array('id' => 'DESC'); // default order
@@ -70,7 +69,7 @@ class Marketing_model extends CI_Model
 
 
 
-    public function update_email($customerId, $newEmail)
+    public function update_email_model($customerId, $newEmail)
     {
         $data = array('email' => $newEmail);
 
@@ -81,7 +80,8 @@ class Marketing_model extends CI_Model
     }
     private function _getdatatables_marketing()
     {
-        $this->db->select('*');        
+        $this->db->select('*');      
+        $this->db->where('type', 'customer');  
 
         $status = $this->input->post('status');
         $dateFrom = $this->input->post('dateFrom');

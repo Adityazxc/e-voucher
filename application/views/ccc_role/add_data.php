@@ -17,7 +17,6 @@
 </form>
 
 
-
 <!-- Modal -->
 <?php $this->load->view('ccc_role/modal_add_data'); ?>
 <!-- end Modal -->
@@ -27,8 +26,8 @@
     <div class="card-header bg-primary text-white px-4">
         <div class="d-flex justify-content-between align-item-center">
             <div class="me-4">
-                <h2 class="card-title text-white mb-0 ">Voucher</h2>
-                <div class="card-subtitile">Details and historty</div>
+                <h2 class="card-title text-white mb-0 ">Customers</h2>
+                <div class="card-subtitile">Details and history</div>
             </div>
 
         </div>

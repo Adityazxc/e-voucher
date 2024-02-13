@@ -32,7 +32,16 @@
             <div>
                 <a class="nav-link" href="<?php echo base_url('ccc'); ?>">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
-                    <span>Dashboard</span>
+                    <span>Dashboard Retail</span>
+                </a>
+            </div>
+        </li>
+        <li
+            class="nav-item <?php echo ($this->uri->segment(1) == 'ccc_corp' && $this->uri->segment(2) == '') ? 'link_active' : ''; ?>">
+            <div>
+                <a class="nav-link" href="<?php echo base_url('ccc_corp'); ?>">
+                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <span>Dashboard Corporate</span>
                 </a>
             </div>
         </li>
@@ -40,7 +49,15 @@
             class="nav-item <?php echo ($this->uri->segment(1) == 'ccc' && $this->uri->segment(2) == 'view_add_data') ? 'link_active' : ''; ?>">
             <a class="nav-link" href="<?php echo base_url('ccc/view_add_data'); ?>">
                 <i class="bi bi-plus-lg"></i>
-                <span>Add Data</span>
+                <span>Add Data Retail</span>
+            </a>
+        </li>
+
+        <li
+            class="nav-item <?php echo ($this->uri->segment(1) == 'ccc_corp' && $this->uri->segment(2) == 'view_add_data') ? 'link_active' : ''; ?>">
+            <a class="nav-link" href="<?php echo base_url('ccc_corp/view_add_data'); ?>">
+                <i class="bi bi-plus-lg"></i>
+                <span>Add Data Corporate</span>
             </a>
         </li>
 
@@ -56,7 +73,7 @@
                     <span>Dashboard</span>
                 </a>
             </div>
-        </li>
+        </li>       
 
         <li
             class="nav-item <?php echo ($this->uri->segment(1) == 'agen' && $this->uri->segment(2) == 'redeem') ? 'link_active' : ''; ?>">
@@ -73,7 +90,16 @@
             <div>
                 <a class="nav-link" href="<?php echo base_url('marketing'); ?>">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
-                    <span>Dashboard</span>
+                    <span>Dashboard Retail</span>
+                </a>
+            </div>
+        </li>
+        <li
+            class="nav-item <?php echo ($this->uri->segment(1) == 'marketing_corp' && $this->uri->segment(2) == '') ? 'link_active' : ''; ?>">
+            <div>
+                <a class="nav-link" href="<?php echo base_url('marketing_corp'); ?>">
+                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <span>Dashboard Corporate</span>
                 </a>
             </div>
         </li>
@@ -93,14 +119,51 @@
             <div>
                 <a class="nav-link" href="<?php echo base_url('finance'); ?>">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
-                    <span>Dashboard</span>
+                    <span>Dashboard Retail</span>
+                </a>
+            </div>
+        </li>    
+        <li
+            class="nav-item <?php echo ($this->uri->segment(1) == 'finance_corp' && $this->uri->segment(2) == '') ? 'link_active' : ''; ?>">
+            <div>
+                <a class="nav-link" href="<?php echo base_url('finance_corp'); ?>">
+                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <span>Dashboard Corporate</span>
                 </a>
             </div>
         </li>    
         <!-- Redeem Voucher Link -->
     <?php endif; ?>
     <!-- Redeem Voucher Link -->
+    <?php if ($role == 'CS'): ?>
+        <li
+            class="nav-item <?php echo ($this->uri->segment(1) == 'cs' && $this->uri->segment(2) == '') ? 'link_active' : ''; ?>">
+            <div>
+                <a class="nav-link" href="<?php echo base_url('cs'); ?>">
+                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <span>Dashboard Retail</span>
+                </a>
+            </div>
+        </li>
+        <li
+            class="nav-item <?php echo ($this->uri->segment(1) == 'cs_corp' && $this->uri->segment(2) == '') ? 'link_active' : ''; ?>">
+            <div>
+                <a class="nav-link" href="<?php echo base_url('cs_corp'); ?>">
+                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <span>Dashboard Corporate</span>
+                </a>
+            </div>
+        </li>
 
+        <li
+            class="nav-item <?php echo ($this->uri->segment(1) == 'cs' && $this->uri->segment(2) == 'send_email') ? 'link_active' : ''; ?>">
+            <a class="nav-link" href="<?php echo base_url('cs/send_email'); ?>">
+                <i class="fas fa-fw fa-wrench"></i>
+                <span>Send Email</span>
+            </a>
+        </li>
+        <!-- Redeem Voucher Link -->
+    <?php endif; ?>
 
 
     <!-- Add Data Link -->

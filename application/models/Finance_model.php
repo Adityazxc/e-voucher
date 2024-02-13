@@ -12,7 +12,7 @@ class Finance_model extends CI_Model
     private function _getdatatables_finance()
     {
         $this->db->select('customers.id,customers.date,customers.awbno_claim,customers.customer_name,customers.harga,customers.email,customers.no_hp,customers.service,customers.voucher,
-        customers.value_voucher,customers.expired_date,customers.status,customers.status_email,customers.otp,users.id_user,users.account_name');
+        customers.value_voucher,customers.expired_date,customers.status,customers.status_email,customers.otp,users.id_user,users.account_name,users.account_number');
         $this->db->from('customers');
         $this->db->join('users', 'customers.id_user = users.id_user', 'left'); // Melakukan join dengan tabel users
 

@@ -9,16 +9,30 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>SB Admin 2 - Login</title>
+    <title>
+        E Voucher - Login
+    </title>
     <link href="<?= base_url() ?>public/vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
     <link href="<?= base_url() ?>public/css/sb-admin-2.min.css" rel="stylesheet">
     <link
         href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
         rel="stylesheet">
-    <!-- Custom fonts for this template-->
-
+    <link rel="icon" href="<?= base_url('public/img/voucher.png') ?>" type="image/png">
+    
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 
 </head>
+<?php
+// Tampilkan pesan sukses jika ada
+if ($this->session->flashdata('success_message')) {
+    echo '<div class="alert alert-success">' . $this->session->flashdata('success_message') . '</div>';
+}
+
+// Tampilkan pesan kesalahan jika ada
+if ($this->session->flashdata('error_message')) {
+    echo '<div class="alert alert-danger">' . $this->session->flashdata('error_message') . '</div>';
+}
+?>
 
 <body class="bg-gradient-light">
 
@@ -31,66 +45,76 @@
                     <div class="card-body p-0">
 
                         <div class="row">
-                            <div class="col-lg-6 d-none d-lg-block">                            
+                            <div class="col-lg-6 d-none d-lg-block">
                                 <img src="<?= base_url('public/img/qr_jne.png') ?>" alt="QR Code"
                                     style="max-width: 100%; max-height: 100%;">
-                        </div>
+                            </div>
 
 
-                        <div class="col-lg-6">
-                            <div class="p-5">
-                                <div class="text-center">
-                                    <h1 class="h4 text-gray-900 mb-4">E-Voucher JNE</h1>
-                                </div>
-                                <form class="user" action="<?php echo base_url('auth/login'); ?>" method="post">
-                                    <div class="form-group">
-                                        <input type="text" class="form-control form-control-user" id="username"
-                                            name="username" aria-describedby="emailHelp"
-                                            placeholder="Enter Email Address..." required>
+                            <div class="col-lg-6">
+                                <div class="p-5">
+                                    <div class="text-center">
+                                        <h1 class="h4 text-gray-900 mb-4">E-Voucher JNE</h1>
                                     </div>
-                                    <div class="form-group">
-                                        <input type="password" class="form-control form-control-user" id="password"
-                                            name="password" placeholder="Password" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <div class="custom-control custom-checkbox small">
-                                            <input type="checkbox" class="custom-control-input" id="customCheck">
-                                            <label class="custom-control-label" for="customCheck">Remember
-                                                Me</label>
+                                    <form class="user" action="<?php echo base_url('auth/login'); ?>" method="post">
+                                        <div class="form-group">
+                                            <input type="text" class="form-control form-control-user" id="username"
+                                                name="username" aria-describedby="emailHelp"
+                                                placeholder="Enter Username" required>
                                         </div>
-                                    </div>
-                                    <hr>
-                                    <button type="submit" class="btn btn-primary btn-user btn-block">
-                                        Login
-                                    </button>
+                                        <div class="form-group">
+                                            <div class="input-group">
+                                                <input type="password" class="form-control form-control-user"
+                                                    id="password" name="password" placeholder="Password" required>
+                                                <div class="input-group-append">
+                                                    <button class="btn btn-outline-secondary" type="button"
+                                                        id="togglePassword">
+                                                        <i class="fa fa-eye"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
 
 
-                                </form>
+                                        <hr>
+                                        <button type="submit" class="btn btn-primary btn-user btn-block">
+                                            Login
+                                        </button>
 
+
+                                    </form>
+
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
+
             </div>
 
         </div>
 
     </div>
 
-    </div>
+    <script>
+        $(document).ready(function () {
+            // Mengatur fungsi toggle untuk tombol mata
+            $("#togglePassword").click(function () {
+                // Memperoleh jenis input (password atau text)
+                var type = $("#password").attr("type");
 
+                // Mengganti jenis input sesuai dengan kondisi saat ini
+                if (type === "password") {
+                    $("#password").attr("type", "text");
+                } else {
+                    $("#password").attr("type", "password");
+                }
+            });
+        });
+    </script>
 
     <!-- Bootstrap core JavaScript-->
-    <script src="<?= base_url() ?>public/vendor/jquery/jquery.min.js"></script>
-    <script src="<?= base_url() ?>public/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
-
-    <!-- Core plugin JavaScript-->
-    <script src="<?= base_url() ?>public/vendor/jquery-easing/jquery.easing.min.js"></script>
-
-
-    <!-- Custom scripts for all pages-->
-    <script src="<?= base_url() ?>public/js/sb-admin-2.min.js"></script>
 </body>
 
 </html>

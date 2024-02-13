@@ -13,11 +13,11 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="customerName">Name Pengirim:</label>
-                        <input type="text" class="form-control" id="customerName" name="customerName" required>
+                        <input type="text" class="form-control" id="customerName" oninput="this.value = this.value.toUpperCase()" name="customerName" required>
                     </div>                             
                     <div class="form-group">
                         <label for="awb_no">No Awb:</label>
-                        <input type="text" class="form-control" pattern="[A-Za-z0-9]{16}" id="awb_no" title="Please enter a 16-character alphanumeric code" name="awb_no" required>
+                        <input type="text" maxlength="16" class="form-control" pattern="[A-Za-z0-9]{16}" id="awb_no" title="Please enter a 16-character alphanumeric code" name="awb_no" required>
 
                     </div>
                     <div class="form-group">
@@ -30,13 +30,13 @@
                     </div>
                     <div class="form-group">
                         <label for="ongkir">Harga Ongkir</label>
-                        <input type="text" class="form-control" id="ongkir" name="ongkir" required>
+                        <input type="number" class="form-control" id="ongkir" name="ongkir" required>
                     </div>              
                     <div class="form-group">
                         <label for="service">Service</label>
                         <select class="form-control" id="service" name="service" required>
-                            <option value="ctc">CTC</option>
-                            <option value="ctc_yes">CTC Yes</option>
+                            <option value="CTC">CTC</option>
+                            <option value="CTC YES">CTC YES</option>
                         </select>
                     </div>
 
@@ -52,7 +52,7 @@
 
 
 <!-- format rupiah -->
- <script type="text/javascript">
+ <!-- <script type="text/javascript">
 var rupiah = document.getElementById('ongkir');
 rupiah.addEventListener('keyup', function(e) {
     // tambahkan 'Rp.' pada saat form di ketik
@@ -77,5 +77,5 @@ function formatRupiah(angka, prefix) {
     rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
     return prefix == undefined ? rupiah : (rupiah ? 'Rp. ' + rupiah : '');
 }
-</script> 
+</script>  -->
 

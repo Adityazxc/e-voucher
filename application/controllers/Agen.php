@@ -13,29 +13,79 @@ class Agen extends CI_Controller
         $this->session->set_userdata('pages', 'agen_role');
     }
 
+    // public function index()
+    // {
+    //     if ($this->session->userdata('logged_in') && $this->session->userdata('role') == 'Agen') {
+    //         $data['title'] = 'Voucher Data';
+    //         $data['page_name'] = 'dashboard_agen';
+    //         $data['role'] = 'Agen';
+    //         $id_user = $this->session->userdata('id_user');
+    //         $data['voucher_data'] = $this->Customer_model->getVoucherData();
+    //         $this->load->view('dashboard', $data);
+    //         // echo "ID User: " . $id_user;
+    //     } else {
+    //         redirect('auth');
+    //     }
+    // }
     public function index()
-    {
-        if ($this->session->userdata('logged_in') && $this->session->userdata('role') == 'Agen') {
+    {        
+        if ($this->session->userdata('password') == 'e10adc3949ba59abbe56e057f20f883e') {
+            redirect('agen/reset_password_view');
+        } else if ($this->session->userdata('logged_in') && $this->session->userdata('role') == 'Agen') {
             $data['title'] = 'Voucher Data';
             $data['page_name'] = 'dashboard_agen';
             $data['role'] = 'Agen';
+            $id_user = $this->session->userdata('id_user');
             $data['voucher_data'] = $this->Customer_model->getVoucherData();
             $this->load->view('dashboard', $data);
-            $id_user = $this->session->userdata('id_user');
             // echo "ID User: " . $id_user;
         } else {
             redirect('auth');
         }
+
     }
+
+    public function reset_password_view()
+    {
+        $data['title'] = 'Voucher Data';
+        $data['page_name'] = 'reset_password';
+        $data['role'] = 'Agen';
+        $this->load->view('dashboard', $data);
+    }
+
+    public function process_reset_password()
+    {
+
+        $new_password = $this->input->post('password');
+        $id_user = $this->session->userdata('id_user');
+        $update_result = $this->Customer_model->update_password($id_user, $new_password);
+
+        if ($update_result) {
+            // Password berhasil diubah
+            $this->session->set_flashdata('success', 'Password berhasil di rubah');
+            redirect('auth');
+        } else {
+            // Terjadi kesalahan saat mengubah password
+            $this->session->set_flashdata('error_message', 'Password gagal di rubah');
+        }
+
+        // redirect('auth');
+    }
+
+    
     public function redeem($data = array())
     {
         $data['title'] = 'Redeem Voucher';
         $data['page_name'] = 'redeem_voucher';
         $data['role'] = 'Agen';
         $data['voucher_data'] = $this->Customer_model->getVoucherData();
+        if ($this->session->userdata('password') == 'e10adc3949ba59abbe56e057f20f883e') {
+            redirect('agen/reset_password_view');
+        } else {
 
+            $this->load->view('dashboard', $data);
+        }
         // Memanggil view dan menyertakan data hasil pencarian
-        $this->load->view('dashboard', $data);
     }
 
     public function search_customer()
@@ -62,23 +112,28 @@ class Agen extends CI_Controller
 
     // Agen.php (controller)
     public function redeem_voucher()
-{
-    $idCustomer = $this->input->post('id');
+    {
+        $idCustomer = $this->input->post('id');
 
-    // Assuming you have a method redeemVoucher in your Customer_model
-    $redeem_voucher = $this->Customer_model->redeemVoucher($idCustomer);
+        // Assuming you have a method redeemVoucher in your Customer_model
+        $redeem_voucher = $this->Customer_model->reedem_voucher();
 
-    if ($redeem_voucher) {
-        // Proses selanjutnya setelah voucher berhasil diredeem
-        $this->session->set_flashdata('success', 'Voucher berhasil diredeem');
-    } else {
-        // Proses selanjutnya jika voucher tidak berhasil diredeem
-        $this->session->set_flashdata('error', 'Gagal redeem voucher');
+        if ($redeem_voucher) {
+            $this->session->set_flashdata('success', 'Voucher berhasil diredeem');
+            redirect(base_url('agen/search_customer'));
+        } else {
+            // Proses selanjutnya jika voucher tidak berhasil diredeem
+            $this->session->set_flashdata('error', 'Gagal redeem voucher');
+            redirect(base_url('agen/search_customer'));
+        }
+
     }
-
-    redirect(base_url('agen/search_customer'));
-}
-
+    private function saveIdUser($idCustomer, $id_user)
+    {
+        // Update the id_user in the customers table
+        $this->db->where('id', $idCustomer);
+        $this->db->update('customers', ['id_user' => $id_user]);
+    }
 
 
     // public function reedem_voucher()
@@ -242,6 +297,7 @@ class Agen extends CI_Controller
         $this->db->select('COUNT(id) as sum_status2, SUM(harga) as sum_status5');
         $this->db->where('id_user', $id_user);
         $this->db->where('status', 'Y');
+        $this->db->where('type', 'customer');
         $this->db->where('DATE(date) >=', $this->input->post('dateFrom'));
         $this->db->where('DATE(date) <=', $this->input->post('dateThru'));
         $this->db->group_by('id_user');

@@ -100,7 +100,7 @@
         };
 
         // BOX 1         
-        $('.totalDigunakan').text('Tunggu.');
+        $('.totalDigunakan').text('0');
         $('.totalPengeluaran').text('Rp 0');
         $.ajax({
             url: "<?= base_url('agen/summary_customer') ?>",

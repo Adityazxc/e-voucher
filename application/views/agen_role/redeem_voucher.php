@@ -1,9 +1,3 @@
-<?php if (isset($response_message)): ?>
-    <div class="alert alert-info" role="alert">
-        <?php echo $response_message; ?>
-    </div>
-<?php endif; ?>
-
 <div class="col-md-6 ml-auto mr-auto">
     <form action="<?php echo base_url('agen/search_customer'); ?>" method="post">
         <div class="form-group">
@@ -30,7 +24,7 @@
             if (date('Y-m-d') <= $search_result[0]->expired_date) {
                 if ($status == 'Y') {
                     echo '<div class="alert alert-info" role="alert">';
-                    echo 'Voucher ' . $search_keyword . ' telah digunakan';
+                    echo '<center>Voucher <strong>' . $search_keyword . '</strong> telah digunakan</center>';
                     echo '</div>';
                 } else {
                     // Continue with the rest of your code for valid vouchers
@@ -90,27 +84,4 @@
     function hapus() {
         $('#search_keyword').val('');
     }
-</script>
-
-<!-- Bootstrap Notify -->
-<script src="https://code.jquery.com/jquery-3.3.1.min.js" crossorigin="anonymous"></script>
-<script src="https://css.jne.co.id/mysales/assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js"></script>
-
-
-
-<script>
-    <?php if ($this->session->flashdata('success')) { ?>
-        var content = {};
-        content.message = '<?php echo $this->session->flashdata("success") ?>';
-        content.title = 'Berhasil ';
-        content.icon = 'la la-check-circle';
-
-        $.notify(content, {
-            type: 'success',
-            placement: {
-                from: 'top',
-                align: 'right'
-            },
-            time: 1000,
-        }); <?php } ?>
 </script>

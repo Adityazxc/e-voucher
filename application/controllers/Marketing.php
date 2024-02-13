@@ -16,6 +16,8 @@ class Marketing extends CI_Controller
         $this->load->library('session');
         $this->load->helper('url');
         // $this->load->library('email');
+        $this->load->library('encryption');
+
     }
 
     public function index()
@@ -135,26 +137,31 @@ class Marketing extends CI_Controller
     {
 
         $this->db->where('status_email', 'Y');
+        $this->db->where('type', 'customer');
         $this->db->where('DATE(date) >=', $this->input->post('dateFrom'));
         $this->db->where('DATE(date) <=', $this->input->post('dateThru'));
         $total_email_dikirim = $this->db->get('customers')->num_rows();
 
         $this->db->where('status_email', 'N');
+        $this->db->where('type', 'customer');
         $this->db->where('DATE(date) >=', $this->input->post('dateFrom'));
         $this->db->where('DATE(date) <=', $this->input->post('dateThru'));
         $total_belum_dikirim = $this->db->get('customers')->num_rows();
 
         $this->db->where('status', 'N');
+        $this->db->where('type', 'customer');
         $this->db->where('DATE(date) >=', $this->input->post('dateFrom'));
         $this->db->where('DATE(date) <=', $this->input->post('dateThru'));
         $customers_status3 = $this->db->get('customers')->num_rows();
 
         $this->db->where('expired_date <', date('Y-m-d'));
+        $this->db->where('type', 'customer');
         $this->db->where('DATE(date) >=', $this->input->post('dateFrom'));
         $this->db->where('DATE(date) <=', $this->input->post('dateThru'));
         $total_hangus = $this->db->get('customers')->num_rows();
 
         $this->db->where('status', 'N');
+        $this->db->where('type', 'customer');
         $this->db->where('DATE(date) >=', $this->input->post('dateFrom'));
         $this->db->where('expired_date <=', $this->input->post('dateThru'));
         $customers_status4 = $this->db->get('customers')->num_rows();
@@ -163,6 +170,7 @@ class Marketing extends CI_Controller
 
         $this->db->select('SUM(harga) as totalharga');
         $this->db->where('status', 'Y');
+        $this->db->where('type', 'customer');
         $this->db->where('DATE(date) >=', $this->input->post('dateFrom'));
         $this->db->where('DATE(date) <=', $this->input->post('dateThru'));
         $customers_status5 = $this->db->get('customers')->row();
@@ -206,7 +214,9 @@ class Marketing extends CI_Controller
             $row[] = '<small style="font-size:12px">' . $no . '</small>';
             $row[] = '<small style="font-size:12px">' . $item->customer_name . '</small>';
             if ($item->email == null) {
-                $row[] = '<button type="button" class="btn btn-sm btn-info" onclick="editEmail(' . $item->id . ', \'' . $item->email . '\')">Edit</button>';
+                $row[] = '<button type="button" class="btn btn-sm btn-info" onclick="editEmail(' .$item->id  . ', \'' . $item->email . '\')">Edit</button>';
+                
+                // $row[] = '<a href="#ModalEditEmail" class="btn btn-sm btn-info" data-toggle="modal" data-id="' . $item->id . '" data-placement="top" data-toggle="tooltip" data-placement="top" title="Edit">Edit</a>';
             } else {
                 $row[] = '<small style="font-size:12px">' . $item->email . '</small>';
             }
@@ -248,21 +258,20 @@ class Marketing extends CI_Controller
     }
     public function update_email()
     {
-        $customerId = $this->input->get('customer_id');
+        // $this->load->Ccc_model('update_email_model');
+        $customerId = $this->input->post('customerId');
         $newEmail = $this->input->post('newEmail');
 
-        $data = array('email' => $newEmail);
-
-        $this->db->where('id', $customerId);
-        $this->db->update('customers', $data);
-
-        if ($this->db->affected_rows() > 0) {
-            // Jika berhasil memperbarui email
-            echo json_encode(array('status' => 'success', 'message' => 'Email updated successfully.'));
+        // var_dump($customerId);
+        // var_dump($newEmail);
+        if ($this->Marketing_model->update_email_model($customerId, $newEmail)) {
+            echo "Email berhasil diperbarui!";
         } else {
-            // Jika gagal memperbarui email
-            echo json_encode(array('status' => 'error', 'message' => 'Failed to update email.'));
+            echo "Gagal memperbarui email.";
         }
+
+        redirect("marketing/send_email");
+        
     }
 
 
@@ -295,7 +304,7 @@ class Marketing extends CI_Controller
         echo json_encode($output);
     }
 
-    public function kirim_email($recipientEmail, $nama, $voucherCode)
+    public function kirim_email($recipientEmail, $nama, $voucherCode,$harga)
     {
         $output = '<!DOCTYPE html>
         <html lang="id">
@@ -356,7 +365,7 @@ class Marketing extends CI_Controller
         
                 <div class="content">
                 <h2>Halo ' . htmlspecialchars($nama) . '</h2>
-                    <p class="promo-text">Selamat Anda mendapatkan E-Voucher Ongkir sebesar Rp. 10.000,- dari Program "GARANSI
+                    <p class="promo-text">Selamat Anda mendapatkan E-Voucher Ongkir sebesar '. htmlspecialchars($harga) .' dari Program "GARANSI
                         ONGKIR KEMBALI" JNE Cabang Utama Bandung. </p>
                 </div>
                 <div class="ketentuan">
@@ -418,44 +427,7 @@ class Marketing extends CI_Controller
 
     }
 
-    // public function test_checkbox()
-    // {
-    //     for ($i = 0; $i < count($this->input->post('id_customer')); $i++) {
-    //         $data['id'] = $this->input->post('id_customer')[$i];
-
-    //         $customers = $this->db->get_where('customers', ['id' => $this->input->post('id_customer')[$i]]);
-
-    //         $data['email'] = $customers->row()->email;
-    //         //manggil yg function email
-
-    //         $this->kirim_email($customers->row()->email, $customers->row()->customer_name, $customers->row()->voucher);
-
-
-    //         echo "<pre>";
-    //         echo print_r($data);
-    //         echo "</pre>";
-
-    //     }
-    // }
-
-    public function update_email()
-    {
-        $customerId = $this->input->post('customer_id');
-        $newEmail = $this->input->post('newEmail');
-
-        $this->load->model('Marketing_model'); // Load the model
-
-        $result = $this->Marketing_model->update_email($customerId, $newEmail);
-
-        // Respond based on the result
-        if ($result) {
-            // Redirect to the send_email page upon successful email update
-            redirect('marketing/send_email');
-        } else {
-            echo json_encode(array('status' => 'error', 'message' => 'Failed to update email.'));
-        }
-    }
-
+   
 
     public function test_checkbox()
     {
@@ -468,27 +440,20 @@ class Marketing extends CI_Controller
             //manggil yg function email
             $this->db->where('id', $this->input->post('id_customer')[$i]);
             $this->db->update('customers', ['status_email' => 'Y']);
-            $this->kirim_email($customers->row()->email, $customers->row()->customer_name, $customers->row()->voucher);
+            $harga=$customers->row()->harga;
+            $harga_voucher=$this->format_rupiah($harga);
+            $this->kirim_email($customers->row()->email, $customers->row()->customer_name, $customers->row()->voucher, $harga_voucher);
+            // $this->kirim_email($customers->row()->email, $customers->row()->customer_name, $customers->row()->voucher);
 
         }
         redirect('marketing/send_email');
     }
-    // public function test_checkbox()
-    // {
-    //     for ($i = 0; $i < count($this->input->post('id_customer')); $i++) {
-    //         $data['id'] = $this->input->post('id_customer')[$i];
-
-    //         $customers = $this->db->get_where('customers', ['id' => $this->input->post('id_customer')[$i]]);
-
-    //         $data['email'] = $customers->row()->email;
-    //         //manggil yg function email
-
-    //         $this->kirim_email($customers->row()->email, $customers->row()->customer_name, $customers->row()->voucher);
-
-    //     }
-    //     redirect('marketing/send_email');
-    // }
-
-
+ 
+    function format_rupiah($harga) {
+        return 'Rp ' . number_format($harga, 0, ',', '.');
+    }
+    
+   
+    
 }
 

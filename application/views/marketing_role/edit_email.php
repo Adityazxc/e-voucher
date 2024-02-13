@@ -1,17 +1,16 @@
-<?= $customerId ?>
 <div class="col d-flex justify-content-center">
     <div class="card" style="width:18rem;">
         <div class="card-body">
-            <form id="editEmailForm" method="POST">
+        <form action="<?php echo base_url('marketing/update_email'); ?>" method="post">
                 <div class="form-group">
                     <h5 class="card-title"><label for="customerID">Edit Email</label></h5>
-                    <input type="hidden" class="form-control" value="<?= $customerId ?>" id="customerId" readonly>
+                    <input type="hidden" class="form-control" value="<?= $customerId ?>" name="customerId"id="customerId">
                 </div>
                 <div class="form-group">
                     <label for="newEmail">New Email:</label>
-                    <input type="email" class="form-control" id="newEmail" required>
+                    <input type="email" class="form-control" name="newEmail" id="newEmail" required>
                 </div>
-                <button type="submit" class="btn btn-primary">Save Changes</button>
+                <center><button type="submit" class="btn btn-primary">Tambahkan Email</button></center>
             </form>
         </div>
     </div>

@@ -36,3 +36,24 @@
 <!-- Include Buttons HTML5 and Print scripts -->
 <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
+<!-- notify  -->
+<script src="https://css.jne.co.id/mysales/assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js"></script>
+
+
+
+<script>
+    <?php if ($this->session->flashdata('success')) { ?>
+        var content = {};
+        content.message = '<?php echo $this->session->flashdata("success") ?>';
+        content.title = 'Berhasil ';
+        content.icon = 'la la-check-circle';
+
+        $.notify(content, {
+            type: 'success',
+            placement: {
+                from: 'top',
+                align: 'right'
+            },
+            time: 1000,
+        }); <?php } ?>
+</script>

@@ -19,8 +19,8 @@
     <div class="card-header bg-primary text-white px-4">
         <div class="d-flex justify-content-between align-item-center">
             <div class="me-4">
-                <h2 class="card-title text-white mb-0 ">Voucher</h2>
-                <div class="card-subtitile">Details and historty</div>
+                <h2 class="card-title text-white mb-0 ">Customers</h2>
+                <div class="card-subtitile">Details and history</div>
             </div>
 
         </div>
@@ -151,6 +151,47 @@
     window.location.href = "<?= base_url('marketing/edit_send_email') ?>?customerId=" + customerId;
 }
 
+</script>
 
+<!-- Modal -->
+<div class="modal fade" id="ModalEditEmail" tabindex="-1" role="dialog" aria-labelledby="Modal" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ModalLabel">Edit</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="<?= base_url('ccc') ?>" method="POST" enctype="multipart/form-data">
+                <div class="modal-body">
+                    <div class="ModaleditForm row"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary col-md-3" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary col-md-3">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#ModalEditEmail').on('show.bs.modal', function(e) {
+            var id = $(e.relatedTarget).data('id');
+            //menggunakan fungsi ajax untuk pengambilan data
+            $.ajax({
+                type: 'post',
+                url: '<?= base_url('ccc/modaledit') ?>',
+                data: {
+                    id: id,
+                },
+                success: function(data) {
+                    $('.ModaleditForm').html(data); //menampilkan data ke dalam modal
+                }
+            });
+        });
+
+    });
 </script>
 

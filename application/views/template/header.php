@@ -15,4 +15,14 @@
 <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
 <link href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css" rel="stylesheet" >
 <link href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css" rel="stylesheet" >
+<link rel="icon" href="<?= base_url('public/img/voucher.png') ?>" type="image/png">    
 
+<?php if (isset($response_message)): ?>
+    <div class="alert alert-info" role="alert">
+        <?php echo $response_message; ?>
+    </div>
+<?php endif; ?>
+
+
+
+<!-- ... (kode HTML atau tampilan lainnya) ... -->
