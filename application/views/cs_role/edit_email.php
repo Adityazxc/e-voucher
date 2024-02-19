@@ -3,14 +3,13 @@
         <div class="card-body">
         <form action="<?php echo base_url('cs/update_email'); ?>" method="post">
                 <div class="form-group">
-                    <h5 class="card-title"><label for="customerID">Edit Email</label></h5>
-                    <input type="hidden" class="form-control" value="<?= $customerId ?>" name="customerId"id="customerId">
+                    <h5 class="card-title"><label for="customerID">Add Email</label></h5>
+                    <input type="hidden" class="form-control" value="<?= $customerId ?>" name="customerId" id="customerId">
                 </div>
-                <div class="form-group">
-                    <label for="newEmail">New Email:</label>
+                <div class="form-group">                    
                     <input type="email" class="form-control" name="newEmail" id="newEmail" required>
                 </div>
-                <center><button type="submit" class="btn btn-primary">Tambahkan Email</button></center>
+                <center><button type="submit" class="btn btn-primary">Add Email</button></center>
             </form>
         </div>
     </div>

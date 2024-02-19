@@ -133,10 +133,8 @@ class Ccc_model_corp extends CI_Model
     private function _getdatatables_finance()
     {
         $this->db->select('*');
-        $this->db->from('corporate');               
-        $dateFrom = $this->input->post('dateFrom');
-        $dateThru = $this->input->post('dateThru');       
-        // Memeriksa apakah dateFrom dan dateThru tidak kosong sebelum menambahkan kondisi WHERE
+        $this->db->from('corporate');     
+        $this->db->order_by('date', 'desc');                  
 
         $this->db->where('DATE(date) >=', $this->input->post('dateFrom'));
         $this->db->where('DATE(date) <=', $this->input->post('dateThru'));

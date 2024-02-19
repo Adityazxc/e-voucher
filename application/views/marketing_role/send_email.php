@@ -45,11 +45,11 @@
                             </div>
                         </th>
                         <th>No</th>
-                        <th>Nama Pengirim</th>
+                        <th>Shipper Name</th>
                         <th>Email</th>
-                        <th>No. Telepon</th>
-                        <th>Harga</th>
-                        <th>AWB no</th>
+                        <th>Phone Number</th>
+                        <th>Amount</th>
+                        <th>AWB No</th>
                         <th>Status</th>
                         <th>Service</th>
                         <th>E-Voucher</th>

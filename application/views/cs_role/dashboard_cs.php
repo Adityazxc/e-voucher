@@ -133,13 +133,13 @@
         <div class="table-responsive">
             <table id="voucher" class="table table-bordered" width="100%" cellspacing="0">
                 <thead>
-                    <tr>
+                <tr>
                         <th>No</th>
-                        <th>Nama Pengirim</th>
+                        <th>Shipper Name</th>
                         <th>Email</th>
-                        <th>No. Telepon</th>
-                        <th>Harga</th>
-                        <th>AWB no</th>
+                        <th>Phone Number</th>
+                        <th>Amount</th>
+                        <th>AWB No</th>
                         <th>Status</th>
                         <th>Service</th>
                         <th>E-Voucher</th>

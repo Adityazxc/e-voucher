@@ -31,26 +31,31 @@ class Auth extends CI_Controller
         $password = $this->input->post('password');
 
         $this->db->where('account_number', $username);
-        $this->db->where('password', md5($password));        
+        $this->db->where('password', md5($password));
 
         $query = $this->db->get('users');
         if ($query->num_rows() == 1) {
             $user = $query->row();
 
+            // Additional update query to set status_account to true
+            $this->db->where('id_user', $user->id_user);
+            $this->db->update('users', array('status_account' => true));
+
             if ($user->role == "CCC") {
                 $redirect_page = "ccc";
-            } else if ($user->password == "e10adc3949ba59abbe56e057f20f883e") {
+            } else if ($user->password == "e10adc3949ba59abbe56e057f20f883e" && $user->role == "Agen") {
                 $redirect_page = "Agen/reset_password_view";
-            }else if ($user->role == "Marketing") {
+            } else if ($user->role == "Marketing") {
                 $redirect_page = "marketing";
             } else if ($user->role == "Agen") {
                 $redirect_page = "agen";
             } else if ($user->role == "Finance") {
                 $redirect_page = "finance";
-            }else if ($user->role == "CS") {
+            }else if ($user->role == "Admin") {
+                $redirect_page = "admin";
+            } else if ($user->role == "CS" ) {
                 $redirect_page = "cs";
-            }
-             else {
+            } else {
                 redirect("auth");
             }
 
@@ -59,7 +64,7 @@ class Auth extends CI_Controller
                 'username' => $user->account_name,
                 'logged_in' => TRUE,
                 'role' => $user->role,
-                'password'=>$user->password
+                'password' => $user->password
             );
             $this->session->set_userdata($data_user);
             redirect($redirect_page);
@@ -72,6 +77,12 @@ class Auth extends CI_Controller
 
     public function logout()
     {
+        $user_id=$this->session->userdata('id_user');
+
+        if($user_id){
+            $this->db->where('id_user',$user_id);
+            $this->db->update('users',array('status_account'=> false));
+        }
         $this->session->sess_destroy();
         redirect('auth');
     }

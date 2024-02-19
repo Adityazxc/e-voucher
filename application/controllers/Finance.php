@@ -10,15 +10,21 @@ class Finance extends CI_Controller
     {
         parent::__construct();
         $this->load->model('Customer_model');
+        $this->load->model('Finance_model');
         $this->session->set_userdata('pages', 'finance_role');
     }
 
     public function index()
     {
-        if ($this->session->userdata('logged_in') && $this->session->userdata('role') == 'Finance') {
+        $user_role = $this->session->userdata('role');
+        if ($this->session->userdata('logged_in') && ($user_role == 'Finance' || $user_role == 'Admin')) {                
             $data['title'] = 'Dashboard Finance';
             $data['page_name'] = 'dashboard_finance';
-            $data['role'] = 'Finance';
+            if ($user_role == 'Finance') {
+                $data['role'] = 'Finance';
+            } else {
+                $data['role'] = 'Admin';
+            } 
             $data['voucher_data'] = $this->Customer_model->getVoucherData();
             $this->load->view('dashboard', $data);
         } else {
@@ -28,16 +34,12 @@ class Finance extends CI_Controller
     public function getdatatables_customer()
     {
         // echo $this->input->post('dateFrom');
-        $list = $this->ccc_model->getdatatables_finance();
+        $list = $this->Finance_model->getdatatables_finance();
 
         $data = array();
         $no = @$_POST['start'];
         foreach ($list as $item) {
-            if ($item->status == 'N') {
-                $status = 'Belum Dipakai';
-            } else {
-                $status = 'Telah dipakai';
-            }
+            
             $no++;
             $row = array();
             $row[] = '<small style="font-size:12px">' . $no . '</small>';
@@ -52,8 +54,8 @@ class Finance extends CI_Controller
         }
         $output = array(
             "draw" => @$_POST['draw'],
-            "recordsTotal" => $this->ccc_model->count_all_customer(),
-            "recordsFiltered" => $this->ccc_model->count_filtered_customer(),
+            "recordsTotal" => $this->Finance_model->count_all_customer(),
+            "recordsFiltered" => $this->Finance_model->count_filtered_customer(),
             "data" => $data,
         );
         // output to json format

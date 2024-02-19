@@ -51,14 +51,14 @@
                     <tr>
                         <th>No</th>
                         <th>Date</th>
-                        <th>AWB no</th>
+                        <th>AWB No</th>
                         <th>Id Customer</th>
                         <th>Customer Name</th>
                         <th>Consignee</th>
                         <th>Qty</th>
                         <th>Weight</th>
-                        <th>Harga</th>
-                        <th>Tanggal Buat</th>
+                        <th>Amount</th>
+                        <th>Create Date</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -72,27 +72,27 @@
 <script src="<?= base_url() ?>public/vendor/jquery/jquery.min.js"></script>
 
 <script>
-   var jumlah = () => {
-    var formData = {
-        status: $('#status').val(),
-        dateFrom: $('[name="dateFrom"]').val(),
-        dateThru: $('[name="dateThru"]').val(),
-    };
+    var jumlah = () => {
+        var formData = {
+            status: $('#status').val(),
+            dateFrom: $('[name="dateFrom"]').val(),
+            dateThru: $('[name="dateThru"]').val(),
+        };
 
-    // BOX 1 
-    $('.totalstatus5').text('Tunggu.');
-    $.ajax({
-        url: "<?= base_url('finance_corp/summary_customer') ?>",
-        dataType: "JSON",
-        type: "POST",
-        data: formData,
-        success: (r) => {
-            // BOX 1                 
-            var formattedTotal = formatRupiah(r.sum_totalharga);
-            $('.totalstatus5').text(formattedTotal);
-        }
-    });
-}
+        // BOX 1 
+        $('.totalstatus5').text('Rp 0');
+        $.ajax({
+            url: "<?= base_url('finance_corp/summary_customer') ?>",
+            dataType: "JSON",
+            type: "POST",
+            data: formData,
+            success: (r) => {
+                // BOX 1                 
+                var formattedTotal = formatRupiah(r.sum_totalharga);
+                $('.totalstatus5').text(formattedTotal);
+            }
+        });
+    }
 
 
 

@@ -1,5 +1,3 @@
-
-
 <form id="filterForm">
     <div class="form-row">
         <div class="form-group col-md-5">
@@ -29,7 +27,9 @@
                 <h2 class="card-title text-white mb-0 ">Customers</h2>
                 <div class="card-subtitile">Details and history</div>
             </div>
-
+            <div class="me-4">
+                <button type="button" class="btn btn-success" onclick="downloadTemplate()">Download Template</button>
+            </div>
         </div>
     </div>
     <div class="card-body p-4">
@@ -56,14 +56,12 @@
                 <thead>
                     <tr>
                         <th>No</th>
-                        <th>Nama Pengirim</th>
+                        <th>Shipper Name</th>
                         <th>Email</th>
-                        <th>No. Telepon</th>
-                        <th>Harga</th>
-                        <th>AWB no</th>
-                        <th>Status</th>
+                        <th>Phone Number</th>
+                        <th>Amount</th>
+                        <th>AWB No</th>
                         <th>Service</th>
-                        <th>E-Voucher</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -77,7 +75,11 @@
 <script src="<?= base_url() ?>public/vendor/jquery/jquery.min.js"></script>
 
 <script type="text/javascript">
-
+    function downloadTemplate() {
+        // Ganti URL dengan lokasi file template Anda
+        var templateUrl = "<?= base_url('public/tamplate_excel/retail.xlsx') ?>";
+        window.location.href = templateUrl;
+    }
     var table;
     $(document).ready(function () {
         //datatables
@@ -95,7 +97,7 @@
                 }
             },
             "columnDefs": [{
-                "targets": [0, 1, 2, 3, 4, 5, 6, 7, 8],
+                "targets": [0, 1, 2, 3, 4, 5, 6],
                 "orderable": false
             },
             {
@@ -104,9 +106,9 @@
             }
             ]
         });
-       
 
-      
+
+
 
     });
 

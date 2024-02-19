@@ -22,10 +22,15 @@ class Cs_corp extends CI_Controller
 
     public function index()
     {
-        if ($this->session->userdata('logged_in') && $this->session->userdata('role') == 'CS') {
-            $data['title'] = 'Dashboard CS';
+        $user_role = $this->session->userdata('role');
+        if ($this->session->userdata('logged_in') && ($user_role=='CS'|| $user_role=='Admin')) {
+            $data['title'] = 'Dashboard Retail';
             $data['page_name'] = 'dashboard_cs_corp';
-            $data['role'] = 'CS';
+            if($user_role=='CS'){
+                $data['role'] = 'CS';
+            }else{
+                $data['role'] = 'Admin';
+            }
             $data['voucher_data'] = $this->Customer_model->getVoucherData();
             $this->load->view('dashboard', $data);
         } else {

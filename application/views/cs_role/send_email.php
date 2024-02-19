@@ -29,30 +29,30 @@
         <input type="hidden" name="status" id="status" value="">
         <!-- Tambahkan ini di atas tabel -->
 
-        <form action="<?= base_url('cs/test_checkbox')?>" method="POST">        
-        <div class="table-responsive">
-            <table id="voucher" class="table table-bordered" width="100%" cellspacing="0">
-                <thead>
-                    <tr>                     
-                        <th>No</th>
-                        <th>Nama Pengirim</th>
-                        <th>Email</th>
-                        <th>No. Telepon</th>
-                        <th>Harga</th>
-                        <th>AWB no</th>
-                        <th>Status</th>
-                        <th>Service</th>
-                        <th>E-Voucher</th>
-                        <th>Status Email</th>
-                    </tr>
-                </thead>
-                <tbody>
+        <form action="<?= base_url('cs/test_checkbox') ?>" method="POST">
+            <div class="table-responsive">
+                <table id="voucher" class="table table-bordered" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Shipper Name</th>
+                            <th>Email</th>
+                            <th>Phone Number</th>
+                            <th>Amount</th>
+                            <th>AWB No</th>
+                            <th>Status</th>
+                            <th>Service</th>
+                            <th>E-Voucher</th>
+                            <th>Status Email</th>
+                        </tr>
+                    </thead>
+                    <tbody>
 
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
 
-        </div>
-        
+            </div>
+
         </form>
     </div>
 </div>
@@ -132,14 +132,14 @@
 </script>
 
 <script>
- function editEmail(id) {
-    // Fetch the ID and name of the selected customer
-    var customerId = id;
+    function editEmail(id) {
+        // Fetch the ID and name of the selected customer
+        var customerId = id;
 
-    console.log(customerId);
-    // Redirect to the edit_email_page with customerId as a query parameter
-    window.location.href = "<?= base_url('cs/edit_send_email') ?>?customerId=" + customerId;
-}
+        console.log(customerId);
+        // Redirect to the edit_email_page with customerId as a query parameter
+        window.location.href = "<?= base_url('cs/edit_send_email') ?>?customerId=" + customerId;
+    }
 
 
 </script>
@@ -167,8 +167,8 @@
     </div>
 </div>
 <script type="text/javascript">
-    $(document).ready(function() {
-        $('#ModalEditEmail').on('show.bs.modal', function(e) {
+    $(document).ready(function () {
+        $('#ModalEditEmail').on('show.bs.modal', function (e) {
             var id = $(e.relatedTarget).data('id');
             //menggunakan fungsi ajax untuk pengambilan data
             $.ajax({
@@ -177,7 +177,7 @@
                 data: {
                     id: id,
                 },
-                success: function(data) {
+                success: function (data) {
                     $('.ModaleditForm').html(data); //menampilkan data ke dalam modal
                 }
             });
@@ -185,4 +185,3 @@
 
     });
 </script>
-

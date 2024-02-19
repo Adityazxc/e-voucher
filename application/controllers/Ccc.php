@@ -11,16 +11,22 @@ class Ccc extends CI_Controller
         $this->load->model('Customer_model');
         $this->load->library('session');
         $this->session->set_userdata('pages', 'ccc_role');
-        $this->load->helper('url');
+        $this->load->helper('url');        
+
     }
 
 
     public function index()
     {
-        if ($this->session->userdata('logged_in') && $this->session->userdata('role') == 'CCC') {
+        $user_role = $this->session->userdata('role');
+        if ($this->session->userdata('logged_in') && ($user_role == 'CCC' || $user_role == 'Admin')) {
             $data['title'] = 'Voucher Data';
             $data['page_name'] = 'dashboard_ccc';
-            $data['role'] = 'CCC';
+            if ($user_role == 'CCC') {
+                $data['role'] = 'CCC';
+            } else {
+                $data['role'] = 'Admin';
+            }
             $data['voucher_data'] = $this->Customer_model->getVoucherData();
             $this->load->view('dashboard', $data);
         } else {
@@ -59,7 +65,7 @@ class Ccc extends CI_Controller
                     empty($row['D']) ||
                     empty($row['E']) ||
                     empty($row['F']) ||
-                    empty($row['G'])                     
+                    empty($row['G'])
                 ) {
                     // Handle empty values, show an error message, or skip the row
                     continue;
@@ -71,7 +77,7 @@ class Ccc extends CI_Controller
                     'no_hp' => $row['D'],
                     'harga' => $row['E'],
                     'awb_no' => $row['F'],
-                    'service' => $row['G'],                    
+                    'service' => $row['G'],
                 );
                 // Check if email is provided, allow null
 
@@ -80,12 +86,12 @@ class Ccc extends CI_Controller
                 $voucher_code = $this->generateVoucherCode();
                 $data['voucher'] = $voucher_code;
                 $data['date'] = date('Y-m-d H:i:s');
-                $data['expired_date'] = date('Y-m-d', strtotime('+30 days'));
+                // $data['expired_date'] = date('Y-m-d', strtotime('+30 days'));
                 $voucher_value = $row['E'];
                 $data['value_voucher'] = $voucher_value;
                 $data['status'] = 'N'; // Default status
                 $data['status_email'] = 'N'; // Default status
-                $data['type'] = 'customer'; 
+                $data['type'] = 'customer';
                 // Simpan data ke database atau lakukan proses lain sesuai kebutuhan
                 $this->Customer_model->tambah($data);
             }
@@ -96,7 +102,7 @@ class Ccc extends CI_Controller
         } else {
             // Tangani kesalahan upload file
             $this->session->set_flashdata('error_message', 'File gagal diunggah, file harus berformat excel!');
-            redirect('Ccc/view_add_data');          
+            redirect('Ccc/view_add_data');
         }
     }
 
@@ -124,12 +130,20 @@ class Ccc extends CI_Controller
 
     public function view_add_data()
     {
-        $data['title'] = 'Add Data';
-        $data['page_name'] = 'add_data';
-        $data['role'] = 'CCC';
-        $data['voucher_data'] = $this->Customer_model->getImportData();
-        $this->load->view('dashboard', $data);
-
+        $user_role = $this->session->userdata('role');
+        if ($this->session->userdata('logged_in') && ($user_role == 'CCC' || $user_role == 'Admin')) {
+            $data['title'] = 'Add Data';
+            $data['page_name'] = 'add_data';
+            if ($user_role == 'CCC') {
+                $data['role'] = 'CCC';
+            } else {
+                $data['role'] = 'Admin';
+            }
+            $data['voucher_data'] = $this->Customer_model->getImportData();
+            $this->load->view('dashboard', $data);
+        } else {
+            redirect('auth');
+        }
     }
 
     public function add_data()
@@ -149,10 +163,10 @@ class Ccc extends CI_Controller
         $voucher_code = $this->generateVoucherCode();
         $customer_data['voucher'] = $voucher_code;
         $customer_data['date'] = date('Y-m-d H:i:s');
-        $customer_data['expired_date'] = date('Y-m-d', strtotime('+30 days'));
+        // $customer_data['expired_date'] = date('Y-m-d', strtotime('+30 days'));
         $customer_data['value_voucher'] = $this->input->post('ongkir');
         $customer_data['status'] = 'N'; // Default status
-        $customer_data['status_email'] = 'N'; 
+        $customer_data['status_email'] = 'N';
         $customer_data['type'] = 'customer'; // Default status
         $this->Customer_model->tambah($customer_data);
         $this->session->set_flashdata('notif', '<div class="alert alert-success" role="alert">Data Berhasil ditambahkan <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span><button><div> ');
@@ -175,11 +189,6 @@ class Ccc extends CI_Controller
         $data = array();
         $no = @$_POST['start'];
         foreach ($list as $item) {
-            if ($item->status == 'N') {
-                $status = 'Belum Dipakai';
-            } else {
-                $status = 'Telah dipakai';
-            }
             $no++;
             $row = array();
             $row[] = '<small style="font-size:12px">' . $no . '</small>';
@@ -188,9 +197,7 @@ class Ccc extends CI_Controller
             $row[] = '<small style="font-size:12px">' . $item->no_hp . '</small>';
             $row[] = '<small style="font-size:12px">' . $item->harga . '</small>';
             $row[] = '<small style="font-size:12px">' . $item->awb_no . '</small>';
-            $row[] = '<small style="font-size:12px">' . $status . '</small>';
             $row[] = '<small style="font-size:12px">' . $item->service . '</small>';
-            $row[] = '<small style="font-size:12px">' . $item->voucher . '</small>';
             $data[] = $row;
         }
         $output = array(
@@ -206,33 +213,33 @@ class Ccc extends CI_Controller
     public function summary_customer()
     {
 
-        $this->db->where('type','customer');        
+        $this->db->where('type', 'customer');
         $this->db->where('DATE(date) >=', $this->input->post('dateFrom'));
         $this->db->where('DATE(date) <=', $this->input->post('dateThru'));
         $customers_status1 = $this->db->get('customers')->num_rows();
 
         $this->db->where('status', 'Y');
-        $this->db->where('type','customer');
+        $this->db->where('type', 'customer');
         $this->db->where('DATE(date) >=', $this->input->post('dateFrom'));
         $this->db->where('DATE(date) <=', $this->input->post('dateThru'));
         $customers_status2 = $this->db->get('customers')->num_rows();
 
         $this->db->where('status', 'N');
-        $this->db->where('type','customer');
+        $this->db->where('type', 'customer');
         $this->db->where('DATE(date) >=', $this->input->post('dateFrom'));
         $this->db->where('DATE(date) <=', $this->input->post('dateThru'));
         $customers_status3 = $this->db->get('customers')->num_rows();
 
         $this->db->where('status', 'N');
-        $this->db->where('type','customer');
+        $this->db->where('type', 'customer');
         $this->db->where('DATE(date) >=', $this->input->post('dateFrom'));
         $this->db->where('expired_date <=', $this->input->post('dateThru'));
         $customers_status4 = $this->db->get('customers')->num_rows();
-        
+
 
         $this->db->select('SUM(harga) as totalharga');
         $this->db->where('status', 'Y');
-        $this->db->where('type','customer');
+        $this->db->where('type', 'customer');
         $this->db->where('DATE(date) >=', $this->input->post('dateFrom'));
         $this->db->where('DATE(date) <=', $this->input->post('dateThru'));
         $customers_status5 = $this->db->get('customers')->row();
@@ -266,12 +273,4 @@ class Ccc extends CI_Controller
         }
     }
 
-    public function modaledit()
-    {
-        $output = '';
-        
-        $output .= 'asdsad<input type="text" name="id" class="form-control" value="' . $this->input->post('id') . '">';
-
-        echo $output;
-    }
 }

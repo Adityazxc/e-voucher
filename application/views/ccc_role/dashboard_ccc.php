@@ -135,14 +135,12 @@
                 <thead>
                     <tr>
                         <th>No</th>
-                        <th>Nama Pengirim</th>
+                        <th>Shipper Name</th>
                         <th>Email</th>
-                        <th>No. Telepon</th>
-                        <th>Harga</th>
-                        <th>AWB no</th>
-                        <th>Status</th>
-                        <th>Service</th>
-                        <th>E-Voucher</th>
+                        <th>Phone Number</th>
+                        <th>Amount</th>
+                        <th>AWB No</th>                        
+                        <th>Service</th>                        
                     </tr>
                 </thead>
                 <tbody>
@@ -222,7 +220,7 @@
                 }
             },
             "columnDefs": [{
-                "targets": [0, 1, 2, 3, 4, 5, 6, 7, 8],
+                "targets": [0, 1, 2, 3, 4, 5, 6],
                 "orderable": false
             },
             {

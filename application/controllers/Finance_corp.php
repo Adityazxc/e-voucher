@@ -16,10 +16,15 @@ class Finance_corp extends CI_Controller
 
     public function index()
     {
-        if ($this->session->userdata('logged_in') && $this->session->userdata('role') == 'Finance') {
+        $user_role = $this->session->userdata('role');
+        if ($this->session->userdata('logged_in') && ($user_role == 'Finance' || $user_role == 'Admin')) {                
             $data['title'] = 'Dashboard Finance';
             $data['page_name'] = 'dashboard_finance';
-            $data['role'] = 'Finance';
+            if ($user_role == 'Finance') {
+                $data['role'] = 'Finance';
+            } else {
+                $data['role'] = 'Admin';
+            } 
             $data['voucher_data'] = $this->Customer_model_corp->getVoucherData();
             $this->load->view('dashboard', $data);
         } else {

@@ -73,10 +73,10 @@
                 <thead>
                     <tr>
                         <th>No</th>
-                        <th>Nama Pengirim</th>
-                        <th>Harga</th>
-                        <th>AWB no</th>
-                        <th>Status</th>
+                        <th>Shipper Name</th>
+                        <th>Amount</th>
+                        <th>Email</th>
+                        <th>AWB No</th>
                         <th>Service</th>
                         <th>E-Voucher</th>
                     </tr>

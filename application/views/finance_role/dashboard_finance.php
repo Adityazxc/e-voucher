@@ -128,7 +128,7 @@
                         <th>Nominal E-Voucher</th>
                         <th>Account ID</th>
                         <th>Account Name</th>
-                        <th>Nama Pengirim</th>
+                        <th>Consignee</th>
                     </tr>
                 </thead>
                 <tbody>

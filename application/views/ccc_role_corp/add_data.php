@@ -8,9 +8,6 @@
             <label for="dateThru">Thru:</label>
             <input type="date" class="form-control" id="dateThru" name="dateThru" value="<?= date('Y-m-d') ?>">
         </div>
-        <!-- <div class="form-group col-md-2">                
-                <button type="button" class="btn btn-primary" onclick="filterData()">Filter</button>
-            </div> -->
     </div>
 </form>
 
@@ -37,6 +34,9 @@ if ($this->session->flashdata('error_message')) {
             <div class="me-4">
                 <h2 class="card-title text-white mb-0 ">Corporate</h2>
                 <div class="card-subtitile">Details and history</div>
+            </div>
+            <div class="me-4">
+                <button type="button" class="btn btn-success" onclick="downloadTemplate()">Download Template</button>
             </div>
 
         </div>
@@ -66,14 +66,14 @@ if ($this->session->flashdata('error_message')) {
                     <tr>
                         <th>No</th>
                         <th>Date</th>
-                        <th>AWB no</th>
+                        <th>AWB No</th>
                         <th>Id Customer</th>
                         <th>Customer Name</th>
                         <th>Consignee</th>
                         <th>Qty</th>
                         <th>Weight</th>
-                        <th>Harga</th>
-                        <th>Tanggal Buat</th>
+                        <th>Amount</th>
+                        <th>Create Date</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -87,7 +87,11 @@ if ($this->session->flashdata('error_message')) {
 <script src="<?= base_url() ?>public/vendor/jquery/jquery.min.js"></script>
 
 <script type="text/javascript">
-
+    function downloadTemplate() {
+        // Ganti URL dengan lokasi file template Anda
+        var templateUrl = "<?= base_url('public/tamplate_excel/corp.xlsx') ?>";
+        window.location.href = templateUrl;
+    }
     var table;
     $(document).ready(function () {
         //datatables

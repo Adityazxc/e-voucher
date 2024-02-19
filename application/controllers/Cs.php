@@ -22,10 +22,15 @@ class Cs extends CI_Controller
 
     public function index()
     {
-        if ($this->session->userdata('logged_in') && $this->session->userdata('role') == 'CS') {
+        $user_role = $this->session->userdata('role');
+        if ($this->session->userdata('logged_in') && ($user_role == 'CS' || $user_role == 'Admin')) {
             $data['title'] = 'Dashboard CS';
             $data['page_name'] = 'dashboard_cs';
-            $data['role'] = 'CS';
+            if ($user_role == 'CS') {
+                $data['role'] = 'CS';
+            } else {
+                $data['role'] = 'Admin';
+            }
             $data['voucher_data'] = $this->Customer_model->getVoucherData();
             $this->load->view('dashboard', $data);
         } else {
@@ -34,10 +39,15 @@ class Cs extends CI_Controller
     }
     public function send_email()
     {
-        if ($this->session->userdata('role') == "CS") {
+        $user_role = $this->session->userdata('role');
+        if ($this->session->userdata('logged_in') && ($user_role == 'CS' || $user_role == 'Admin')) {
             $data['title'] = 'Dashboard CS';
             $data['page_name'] = 'send_email';
-            $data['role'] = 'CS';
+            if ($user_role == 'CS') {
+                $data['role'] = 'CS';
+            } else {
+                $data['role'] = 'Admin';
+            }
             $data['voucher_data'] = $this->Customer_model->getVoucherData();
             $this->load->view('dashboard', $data);
         } else {
@@ -90,8 +100,7 @@ class Cs extends CI_Controller
 
     public function getdatatables_send_email()
     {
-        $list = $this->Cs_model->getdatatables_marketing();
-        $role = $this->session->userdata('role');
+        $list = $this->Cs_model->getdatatables_marketing();        
 
         $data = array();
         $no = @$_POST['start'];
@@ -111,17 +120,18 @@ class Cs extends CI_Controller
             $row[] = '<small style="font-size:12px">' . $no . '</small>';
             $row[] = '<small style="font-size:12px">' . $item->customer_name . '</small>';
             if ($item->email == null) {
-                $row[] = '<button type="button" class="btn btn-sm btn-info" onclick="editEmail(' . $item->id . ', \'' . $item->email . '\')">Edit</button>';
-
-                // $row[] = '<a href="#ModalEditEmail" class="btn btn-sm btn-info" data-toggle="modal" data-id="' . $item->id . '" data-placement="top" data-toggle="tooltip" data-placement="top" title="Edit">Edit</a>';
+                $row[] = '<button type="button" class="btn btn-sm btn-info" onclick="editEmail(' . $item->id . ', \'' . $item->email . '\')">Edit</button>';                
             } else {
                 $row[] = '<small style="font-size:12px">' . $item->email . '</small>';
             }
-            $formattedNumber = $item->no_hp;        
+            $formattedNumber = $item->no_hp;
             if ($item->no_hp[0] === '0') {
-                $formattedNumber = '+62' . substr($item->no_hp, 1);
-            }            
-            $whatsappLink = '<a href="https://wa.me/' . $formattedNumber . '" target="_blank">' . $formattedNumber . '</a>';
+                $formattedNumber = '62' . substr($item->no_hp, 1);
+            }
+            $resi = $item->awb_no;
+            $sendWhatsapp = $this->openWhatsapp($formattedNumber, $resi);
+            $whatsappLink = '<a href="' . $sendWhatsapp . '" target="_blank">+' . $formattedNumber . '</a>';
+
             $row[] = '<small style="font-size:12px">' . $whatsappLink . '</small>';
             $row[] = '<small style="font-size:12px">' . $item->harga . '</small>';
             $row[] = '<small style="font-size:12px">' . $item->awb_no . '</small>';
@@ -138,6 +148,22 @@ class Cs extends CI_Controller
             "data" => $data,
         );
         echo json_encode($output);
+    }
+
+    private function openWhatsapp($phoneNumber, $resi)
+    {
+        $message = "Halo kak, \n\n" .
+            "Selamat ya, Kamu dapat E-Voucher Ongkir JNE untuk kiriman kamu dengan no resi " . $resi . "\n" .
+            "E-Voucher akan dikirmkan melalui e-mail, segera kirimkan alamat e-mail mu dengan membalas pesan ini ya Kak.\n" .
+            "Jika ingin informasi lebih lanjut, jangan ragu menghubungi Call Center kami di 022-86023222.\n\n" .
+            "Salam hangat dan selamat beraktivitas ";
+
+        $encodedPhoneNumber = urlencode($phoneNumber);
+        $encodedMessage = urlencode($message);
+        $whatsappUrl = "https://wa.me/" . $encodedPhoneNumber . "?text=" . $encodedMessage;
+
+        return $whatsappUrl;
+
     }
     public function send_emails()
     {
@@ -160,16 +186,25 @@ class Cs extends CI_Controller
     }
     public function update_email()
     {
-        // $this->load->Ccc_model('update_email_model');
         $customerId = $this->input->post('customerId');
         $newEmail = $this->input->post('newEmail');
-        // var_dump($customerId);
-        // var_dump($newEmail);
         if ($this->Cs_model->update_email_model($customerId, $newEmail)) {
-            $customers = $this->db->get_where('customers', ['id' =>$customerId]);
-            $harga=$customers->row()->harga;
-            $harga_voucher=$this->format_rupiah($harga);
-            $this->kirim_email($customers->row()->email, $customers->row()->customer_name, $customers->row()->voucher, $harga_voucher);
+            $customers = $this->db->get_where('customers', ['id' => $customerId]);
+            $this->db->where('id', $customerId);
+            $this->db->update('customers', ['status_email' => 'Y']);
+            $harga = $customers->row()->harga;
+            $resi = $customers->row()->awb_no;
+            $harga_voucher = $this->format_rupiah($harga);
+
+            // Tambahkan 30 hari ke tanggal saat ini
+            $newExpiredDate = date('Y-m-d', strtotime('+30 days'));
+
+            // Set kolom expired_date dengan nilai baru
+            $this->db->where('id', $customerId);
+            $this->db->update('customers', ['expired_date' => $newExpiredDate]);
+            $expired = strftime('%e %B %Y', strtotime($newExpiredDate));
+
+            $this->kirim_email($customers->row()->email, $customers->row()->customer_name, $customers->row()->voucher, $harga_voucher, $resi, $expired);
             echo "Email berhasil diperbarui!";
         } else {
             echo "Gagal memperbarui email.";
@@ -178,9 +213,6 @@ class Cs extends CI_Controller
         redirect("cs/send_email");
 
     }
-
-
-
 
 
     public function getdatatables_email_null()
@@ -209,7 +241,7 @@ class Cs extends CI_Controller
         echo json_encode($output);
     }
 
-    public function kirim_email($recipientEmail, $nama, $voucherCode,$harga)
+    public function kirim_email($recipientEmail, $nama, $voucherCode, $harga, $resi, $expired_date)
     {
         $output = '<!DOCTYPE html>
         <html lang="id">
@@ -218,7 +250,8 @@ class Cs extends CI_Controller
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>Promosi Voucher</title>
-        
+            
+        </head>
         <body>
             <div class="container">
                 <style>
@@ -270,12 +303,12 @@ class Cs extends CI_Controller
         
                 <div class="content">
                 <h2>Halo ' . htmlspecialchars($nama) . '</h2>
-                    <p class="promo-text">Selamat Anda mendapatkan E-Voucher Ongkir sebesar '. htmlspecialchars($harga) .' dari Program "GARANSI
-                        ONGKIR KEMBALI" JNE Cabang Utama Bandung. </p>
+                    <p class="promo-text">Selamat Anda mendapatkan E-Voucher Ongkir sebesar ' . htmlspecialchars($harga) . ' dari Program "GARANSI
+                        ONGKIR KEMBALI" JNE Cabang Utama Bandung dari Transaksi pengiriman dengan No. Resi/Airwaybill ' . htmlspecialchars($resi) . ' berikut syarat & ketentuannya :</p>
                 </div>
                 <div class="ketentuan">
                     <ol>
-                        <li>E-Voucher Ongkir berlaku hingga 5 Maret 2024</li>                        
+                        <li>E-Voucher Ongkir berlaku hingga ' . htmlspecialchars($expired_date) . '</li>                        
                         <li>E-Voucher Ongkir hanya bisa digunakan untuk 1 (satu) kali transaksi</li>
                         <li>Tidak ada Pengembalian Uang jika E-Voucher melebihi Harga Ongkos Kirim</li>
                         <li>Jika pada saat melakukan Transaksi Pengiriman Total Ongkos Kirim melebihi dari nilai E-Voucher maka
@@ -286,7 +319,7 @@ class Cs extends CI_Controller
         
                 <div class="footer">
                     <p>
-                    an kode <b style="font-size: larger;background-color: yellow;">' . htmlspecialchars($voucherCode) . '</b> di seluruh Sales Counter JNE Kantor Cabang Utama Bandung.</p>
+                    Segera gunakan E-Voucher ongkir dengaan kode <b style="font-size: larger;background-color: yellow;">' . htmlspecialchars($voucherCode) . '</b> di seluruh Sales Counter JNE Kantor Cabang Utama Bandung.</p>
         
                     Tim Promotion E-Voucher JNE Bandung
                 </div>
@@ -295,10 +328,6 @@ class Cs extends CI_Controller
         
         </html>
         ';
-        // $output = '
-
-        // ';
-        // $output .= 'Testing Email';
 
         $conn = [
             'protocol' => 'smtp',

@@ -78,12 +78,13 @@ class Cs_model extends CI_Model
 
         return $this->db->affected_rows() > 0;
     }
+    
     private function _getdatatables_marketing()
     {
         $this->db->select('*');      
         $this->db->where('type', 'customer');  
-        $this->db->where('email',null);  
-
+        $this->db->where('email',null);
+        
         $status = $this->input->post('status');
         $dateFrom = $this->input->post('dateFrom');
         $dateThru = $this->input->post('dateThru');

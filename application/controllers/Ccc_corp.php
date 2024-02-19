@@ -18,10 +18,15 @@ class Ccc_corp extends CI_Controller
 
     public function index()
     {
-        if ($this->session->userdata('logged_in') && $this->session->userdata('role') == 'CCC') {
+        $user_role = $this->session->userdata('role');
+        if ($this->session->userdata('logged_in') && ($user_role == 'CCC' || $user_role == 'Admin')) {
             $data['title'] = 'Voucher Data';
             $data['page_name'] = 'dashboard_ccc';
-            $data['role'] = 'CCC';
+            if ($user_role == 'CCC') {
+                $data['role'] = 'CCC';
+            } else {
+                $data['role'] = 'Admin';
+            }
             $data['voucher_data'] = $this->Customer_model_corp->getVoucherData();
             $this->load->view('dashboard', $data);
         } else {
@@ -39,19 +44,19 @@ class Ccc_corp extends CI_Controller
                 'allowed_types' => 'xlsx|xls|csv', // Sesuaikan dengan jenis file yang diizinkan
             )
         );
-    
+
         if ($this->upload->do_upload('excel_file')) {
             $uploadedData = $this->upload->data();
             $file_path = $uploadedData['full_path'];
-    
+
             // Menggunakan library PhpSpreadsheet
             $spreadsheet = IOFactory::load($file_path);
             // null value, calculate formulas, format data, returnCellRef
             $sheetData = $spreadsheet->getActiveSheet()->toArray(null, true, true, true);
-    
+
             // Membuang baris pertama (header)
             unset($sheetData[1]);
-    
+
             // Proses data dari $sheetData sesuai kebutuhan
             foreach ($sheetData as $row) {
                 if (
@@ -68,16 +73,16 @@ class Ccc_corp extends CI_Controller
                     // Handle empty values, show an error message, or skip the row
                     continue;
                 }
-    
+
                 // Convert date format from "09/02/2024 22:43:00" to "YYYY-MM-DD"
-                
+
                 $inputDate = $row['B'];
 
                 // Buat objek DateTime dari tanggal input
                 $date = Date('Y-m-d', strtotime($inputDate));
-                
+
                 // Ubah format tanggal menjadi YYYY-MM-DD                
-    
+
                 $rowData = array(
                     'create_at' => $date,
                     'awb_no' => $row['C'],
@@ -98,37 +103,25 @@ class Ccc_corp extends CI_Controller
             redirect('Ccc_corp/view_add_data');
         }
     }
-    
-
-
-    private function generateVoucherCode()
-    {
-        $length = 16;
-        $characters = '23456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz';
-        $voucher_code = '';
-
-        // loop untuk menghasilkan 16 karakter uniq
-        for ($i = 0; $i < $length; $i++) {
-
-            // pilih karakter acak
-            $voucher_code .= $characters[rand(0, strlen($characters) - 1)];
-        }
-
-
-        return $voucher_code;
-    }
-
 
 
 
     public function view_add_data()
     {
-        $data['title'] = 'Add Data';
-        $data['page_name'] = 'add_data';
-        $data['role'] = 'CCC';
-        $data['voucher_data'] = $this->Customer_model_corp->getImportData();
-        $this->load->view('dashboard', $data);
-
+        $user_role = $this->session->userdata('role');
+        if ($this->session->userdata('logged_in') && ($user_role == 'CCC' || $user_role == 'Admin')) {
+            $data['title'] = 'Add Data';
+            $data['page_name'] = 'add_data';
+            if ($user_role == 'CCC') {
+                $data['role'] = 'CCC';
+            } else {
+                $data['role'] = 'Admin';
+            }
+            $data['voucher_data'] = $this->Customer_model_corp->getImportData();
+            $this->load->view('dashboard', $data);
+        } else {
+            redirect('auth');
+        }
     }
 
     public function add_data()

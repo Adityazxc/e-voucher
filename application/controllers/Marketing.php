@@ -22,10 +22,15 @@ class Marketing extends CI_Controller
 
     public function index()
     {
-        if ($this->session->userdata('logged_in') && $this->session->userdata('role') == 'Marketing') {
+        $user_role = $this->session->userdata('role');
+        if ($this->session->userdata('logged_in') && ($user_role == 'Marketing' || $user_role == 'Admin')) {
             $data['title'] = 'Dashboard Marketing';
             $data['page_name'] = 'dashboard_marketing';
-            $data['role'] = 'Marketing';
+            if ($user_role == 'Marketing') {
+                $data['role'] = 'Marketing';
+            } else {
+                $data['role'] = 'Admin';
+            }
             $data['voucher_data'] = $this->Customer_model->getVoucherData();
             $this->load->view('dashboard', $data);
         } else {
@@ -34,10 +39,15 @@ class Marketing extends CI_Controller
     }
     public function send_email()
     {
-        if ($this->session->userdata('role') == "Marketing") {
+        $user_role = $this->session->userdata('role');
+        if ($this->session->userdata('logged_in') && ($user_role == 'Marketing' || $user_role == 'Admin')) {
             $data['title'] = 'Dashboard Marketing';
             $data['page_name'] = 'send_email';
-            $data['role'] = 'Marketing';
+            if ($user_role == 'Marketing') {
+                $data['role'] = 'Marketing';
+            } else {
+                $data['role'] = 'Admin';
+            }
             $data['voucher_data'] = $this->Customer_model->getVoucherData();
             $this->load->view('dashboard', $data);
         } else {
@@ -109,9 +119,7 @@ class Marketing extends CI_Controller
             $no++;
             $row = array();
 
-            $row[] = '<small style="font-size:12px">' . $no . '</small>';
-            // $row[] = '<small style="font-size:12px">' . $no . '</small>';
-            // $row[] = '<input type="hidden" name="id[]" value="' . $no . '"><input type="checkbox" name="id_customer[]" value="' . @$item->id . '" class="form-check-input ml-2 data-check" id="id_customer">';
+            $row[] = '<small style="font-size:12px">' . $no . '</small>';                      
             $row[] = '<small style="font-size:12px">' . $item->customer_name . '</small>';
             $row[] = '<small style="font-size:12px">' . $item->email . '</small>';
             $row[] = '<small style="font-size:12px">' . $item->no_hp . '</small>';
@@ -125,8 +133,8 @@ class Marketing extends CI_Controller
         }
         $output = array(
             "draw" => @$_POST['draw'],
-            "recordsTotal" => $this->ccc_model->count_all_customer(),
-            "recordsFiltered" => $this->ccc_model->count_filtered_customer(),
+            "recordsTotal" => $this->Marketing_model->count_all_customer(),
+            "recordsFiltered" => $this->Marketing_model->count_filtered_customer(),
             "data" => $data,
         );
         // output to json format
@@ -160,14 +168,6 @@ class Marketing extends CI_Controller
         $this->db->where('DATE(date) <=', $this->input->post('dateThru'));
         $total_hangus = $this->db->get('customers')->num_rows();
 
-        $this->db->where('status', 'N');
-        $this->db->where('type', 'customer');
-        $this->db->where('DATE(date) >=', $this->input->post('dateFrom'));
-        $this->db->where('expired_date <=', $this->input->post('dateThru'));
-        $customers_status4 = $this->db->get('customers')->num_rows();
-        // echo print_r($this->db->last_query());
-
-
         $this->db->select('SUM(harga) as totalharga');
         $this->db->where('status', 'Y');
         $this->db->where('type', 'customer');
@@ -179,17 +179,14 @@ class Marketing extends CI_Controller
             'sum_email_dikirim' => $total_email_dikirim,
             'sum_belum_dikirim' => $total_belum_dikirim,
             'sum_hangus' => $total_hangus,
-            // 'sum_status1' => $customers_status1,
-            // 'sum_status2' => $customers_status2,
             'sum_status3' => $customers_status3,
-            'sum_status4' => $customers_status4,
             'sum_status5' => $customers_status5->totalharga,
         ]);
     }
 
     public function getdatatables_send_email()
     {
-        $list = $this->ccc_model->getdatatables_marketing();
+        $list = $this->Marketing_model->getdatatables_send_email();
 
         $data = array();
         $no = @$_POST['start'];
@@ -214,8 +211,8 @@ class Marketing extends CI_Controller
             $row[] = '<small style="font-size:12px">' . $no . '</small>';
             $row[] = '<small style="font-size:12px">' . $item->customer_name . '</small>';
             if ($item->email == null) {
-                $row[] = '<button type="button" class="btn btn-sm btn-info" onclick="editEmail(' .$item->id  . ', \'' . $item->email . '\')">Edit</button>';
-                
+                $row[] = '<button type="button" class="btn btn-sm btn-info" onclick="editEmail(' . $item->id . ', \'' . $item->email . '\')">Edit</button>';
+
                 // $row[] = '<a href="#ModalEditEmail" class="btn btn-sm btn-info" data-toggle="modal" data-id="' . $item->id . '" data-placement="top" data-toggle="tooltip" data-placement="top" title="Edit">Edit</a>';
             } else {
                 $row[] = '<small style="font-size:12px">' . $item->email . '</small>';
@@ -231,8 +228,8 @@ class Marketing extends CI_Controller
         }
         $output = array(
             "draw" => @$_POST['draw'],
-            "recordsTotal" => $this->ccc_model->count_all_customer(),
-            "recordsFiltered" => $this->ccc_model->count_filtered_customer(),
+            "recordsTotal" => $this->Marketing_model->count_all_send_email(),
+            "recordsFiltered" => $this->Marketing_model->count_filtered_send_email(),
             "data" => $data,
         );
         echo json_encode($output);
@@ -256,25 +253,6 @@ class Marketing extends CI_Controller
             echo 'Tidak ada email yang dipilih atau email null.';
         }
     }
-    public function update_email()
-    {
-        // $this->load->Ccc_model('update_email_model');
-        $customerId = $this->input->post('customerId');
-        $newEmail = $this->input->post('newEmail');
-
-        // var_dump($customerId);
-        // var_dump($newEmail);
-        if ($this->Marketing_model->update_email_model($customerId, $newEmail)) {
-            echo "Email berhasil diperbarui!";
-        } else {
-            echo "Gagal memperbarui email.";
-        }
-
-        redirect("marketing/send_email");
-        
-    }
-
-
 
 
 
@@ -304,7 +282,7 @@ class Marketing extends CI_Controller
         echo json_encode($output);
     }
 
-    public function kirim_email($recipientEmail, $nama, $voucherCode,$harga)
+    public function kirim_email($recipientEmail, $nama, $voucherCode, $harga, $resi, $expired_date)
     {
         $output = '<!DOCTYPE html>
         <html lang="id">
@@ -313,7 +291,8 @@ class Marketing extends CI_Controller
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>Promosi Voucher</title>
-        
+            
+        </head>
         <body>
             <div class="container">
                 <style>
@@ -365,12 +344,12 @@ class Marketing extends CI_Controller
         
                 <div class="content">
                 <h2>Halo ' . htmlspecialchars($nama) . '</h2>
-                    <p class="promo-text">Selamat Anda mendapatkan E-Voucher Ongkir sebesar '. htmlspecialchars($harga) .' dari Program "GARANSI
-                        ONGKIR KEMBALI" JNE Cabang Utama Bandung. </p>
+                    <p class="promo-text">Selamat Anda mendapatkan E-Voucher Ongkir sebesar ' . htmlspecialchars($harga) . ' dari Program "GARANSI
+                        ONGKIR KEMBALI" JNE Cabang Utama Bandung dari Transaksi pengiriman dengan No. Resi/Airwaybill ' . htmlspecialchars($resi) . ' berikut syarat & ketentuannya :</p>
                 </div>
                 <div class="ketentuan">
                     <ol>
-                        <li>E-Voucher Ongkir berlaku hingga 5 Maret 2024</li>                        
+                        <li>E-Voucher Ongkir berlaku hingga ' . htmlspecialchars($expired_date) . '</li>                        
                         <li>E-Voucher Ongkir hanya bisa digunakan untuk 1 (satu) kali transaksi</li>
                         <li>Tidak ada Pengembalian Uang jika E-Voucher melebihi Harga Ongkos Kirim</li>
                         <li>Jika pada saat melakukan Transaksi Pengiriman Total Ongkos Kirim melebihi dari nilai E-Voucher maka
@@ -381,7 +360,7 @@ class Marketing extends CI_Controller
         
                 <div class="footer">
                     <p>
-                    an kode <b style="font-size: larger;background-color: yellow;">' . htmlspecialchars($voucherCode) . '</b> di seluruh Sales Counter JNE Kantor Cabang Utama Bandung.</p>
+                    Segera gunakan E-Voucher ongkir dengaan kode <b style="font-size: larger;background-color: yellow;">' . htmlspecialchars($voucherCode) . '</b> di seluruh Sales Counter JNE Kantor Cabang Utama Bandung.</p>
         
                     Tim Promotion E-Voucher JNE Bandung
                 </div>
@@ -390,11 +369,6 @@ class Marketing extends CI_Controller
         
         </html>
         ';
-        // $output = '
-
-        // ';
-        // $output .= 'Testing Email';
-
         $conn = [
             'protocol' => 'smtp',
             'smtp_host' => 'smtp.office365.com',
@@ -409,11 +383,6 @@ class Marketing extends CI_Controller
         ];
 
         $this->load->library('email', $conn);
-
-        // $this->email->to('lukman.nugraha@jne.co.id');
-        // $this->email->to('vidyana.rosalina@jne.co.id');
-        // $this->email->to('enzo.edogawa15@gmail.com');
-        // $this->email->to('iqipulla123@gmail.com');
         $this->email->from('bdo.itproject@jne.co.id', 'JNE BANDUNG');
         $this->email->to($recipientEmail);
         $this->email->subject('Selamat Anda mendapatkan E-Voucher Ongkir dari JNE Bandung');
@@ -427,7 +396,7 @@ class Marketing extends CI_Controller
 
     }
 
-   
+
 
     public function test_checkbox()
     {
@@ -438,22 +407,33 @@ class Marketing extends CI_Controller
 
             $data['email'] = $customers->row()->email;
             //manggil yg function email
-            $this->db->where('id', $this->input->post('id_customer')[$i]);
+            $this->db->where('id', $customer_id);
             $this->db->update('customers', ['status_email' => 'Y']);
-            $harga=$customers->row()->harga;
-            $harga_voucher=$this->format_rupiah($harga);
-            $this->kirim_email($customers->row()->email, $customers->row()->customer_name, $customers->row()->voucher, $harga_voucher);
-            // $this->kirim_email($customers->row()->email, $customers->row()->customer_name, $customers->row()->voucher);
+            $harga = $customers->row()->harga;
+            $resi = $customers->row()->awb_no;
+            $harga_voucher = $this->format_rupiah($harga);
+
+            // Tambahkan 30 hari ke tanggal saat ini
+            $newExpiredDate = date('Y-m-d', strtotime('+30 days'));
+
+            // Set kolom expired_date dengan nilai baru
+            $this->db->where('id', $customer_id);
+            $this->db->update('customers', ['expired_date' => $newExpiredDate]);
+            $expired = strftime('%e %B %Y', strtotime($newExpiredDate));
+
+            $this->kirim_email($customers->row()->email, $customers->row()->customer_name, $customers->row()->voucher, $harga_voucher, $resi, $expired);
+
 
         }
         redirect('marketing/send_email');
     }
- 
-    function format_rupiah($harga) {
+
+    function format_rupiah($harga)
+    {
         return 'Rp ' . number_format($harga, 0, ',', '.');
     }
-    
-   
-    
+
+
+
 }
 

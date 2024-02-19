@@ -13,28 +13,20 @@ class Agen extends CI_Controller
         $this->session->set_userdata('pages', 'agen_role');
     }
 
-    // public function index()
-    // {
-    //     if ($this->session->userdata('logged_in') && $this->session->userdata('role') == 'Agen') {
-    //         $data['title'] = 'Voucher Data';
-    //         $data['page_name'] = 'dashboard_agen';
-    //         $data['role'] = 'Agen';
-    //         $id_user = $this->session->userdata('id_user');
-    //         $data['voucher_data'] = $this->Customer_model->getVoucherData();
-    //         $this->load->view('dashboard', $data);
-    //         // echo "ID User: " . $id_user;
-    //     } else {
-    //         redirect('auth');
-    //     }
-    // }
+
     public function index()
-    {        
+    {
+        $user_role = $this->session->userdata('role');
         if ($this->session->userdata('password') == 'e10adc3949ba59abbe56e057f20f883e') {
             redirect('agen/reset_password_view');
-        } else if ($this->session->userdata('logged_in') && $this->session->userdata('role') == 'Agen') {
+        } else if ($this->session->userdata('logged_in') && ($user_role == 'Agen' || $user_role == 'Admin')) {
             $data['title'] = 'Voucher Data';
             $data['page_name'] = 'dashboard_agen';
-            $data['role'] = 'Agen';
+            if ($user_role == 'Agen') {
+                $data['role'] = 'Agen';
+            } else {
+                $data['role'] = 'Admin';
+            }
             $id_user = $this->session->userdata('id_user');
             $data['voucher_data'] = $this->Customer_model->getVoucherData();
             $this->load->view('dashboard', $data);
@@ -72,18 +64,28 @@ class Agen extends CI_Controller
         // redirect('auth');
     }
 
-    
+
     public function redeem($data = array())
     {
-        $data['title'] = 'Redeem Voucher';
-        $data['page_name'] = 'redeem_voucher';
-        $data['role'] = 'Agen';
-        $data['voucher_data'] = $this->Customer_model->getVoucherData();
-        if ($this->session->userdata('password') == 'e10adc3949ba59abbe56e057f20f883e') {
-            redirect('agen/reset_password_view');
-        } else {
+        $user_role = $this->session->userdata('role');
+        if ($this->session->userdata('logged_in') && ($user_role == 'Agen' || $user_role == 'Admin')) {
 
-            $this->load->view('dashboard', $data);
+            $data['title'] = 'Redeem Voucher';
+            $data['page_name'] = 'redeem_voucher';
+            if ($user_role == 'Agen') {
+                $data['role'] = 'Agen';
+            } else {
+                $data['role'] = 'Admin';
+            }
+            $data['voucher_data'] = $this->Customer_model->getVoucherData();
+            if ($this->session->userdata('password') == 'e10adc3949ba59abbe56e057f20f883e') {
+                redirect('agen/reset_password_view');
+            } else {
+
+                $this->load->view('dashboard', $data);
+            }
+        } else {
+            redirect('auth');
         }
         // Memanggil view dan menyertakan data hasil pencarian
     }
@@ -136,63 +138,7 @@ class Agen extends CI_Controller
     }
 
 
-    // public function reedem_voucher()
-    // {
-    //     $idCustomer = $this->input->post('id');    
-    //     $otp = '';
-    //     $reedem_voucher = $this->Customer_model->reedem_voucher();        
-
-    //     if ($reedem_voucher == true) {
-    //         // Proses selanjutnya setelah voucher berhasil diredeem
-    //         $this->session->set_flashdata('success', 'Voucher berhasil diredeem');
-    //         redirect(base_url('agen/search_customer'));
-
-    //     } else {
-    //         // Proses selanjutnya jika voucher tidak berhasil diredeem
-    //         $this->session->set_flashdata('error', 'Gagal redeem voucher');
-    //         redirect(base_url('agen/search_customer'));
-    //     }
-    // }
-    // public function reedem_voucher()
-    // {
-    //     $idCustomer = $this->input->post('id');    
-    //     $otp = '';
-    //     $reedem_voucher = $this->Customer_model->reedem_voucher();        
-    //     if ($this->input->post('gunakan_btn')) {
-    //     $otp = $this->customer_model->generate_otp($idCustomer);
-    //     }
-    //     if ($reedem_voucher == true) {
-    //         // Proses selanjutnya setelah voucher berhasil diredeem
-    //         $this->session->set_flashdata('success', 'Voucher berhasil diredeem');
-    //         // echo '<pre>';
-    //         // print_r($idCustomer);
-    //         // echo '</pre>';
-    //         redirect(base_url('agen/otp/' . $idCustomer));
-    //     } else {
-    //         // Proses selanjutnya jika voucher tidak berhasil diredeem
-    //         $this->session->set_flashdata('error', 'Gagal redeem voucher');
-    //         redirect(base_url('agen/search_customer'));
-    //     }
-    // }
-    // public function reedem_voucher()
-    // {
-    //     $otp = '';
-    //     $reedem_voucher = $this->customer_model->reedem_voucher();
-
-    //     if ($this->input->post('gunakan_btn')) {
-    //         $otp = $this->customer_model->generate_otp($this->input->post('id'));
-    //     }
-
-    //     if ($reedem_voucher == true) {
-    //         // Proses selanjutnya setelah voucher berhasil diredeem
-    //         $this->session->set_flashdata('success', 'Voucher berhasil diredeem');
-    //         redirect(base_url('agen/otp'));
-    //     } else {
-    //         // Proses selanjutnya jika voucher tidak berhasil diredeem
-    //         $this->session->set_flashdata('error', 'Gagal redeem voucher');
-    //         redirect(base_url('agen/search_customer'));
-    //     }
-    // }
+   
 
     public function validate_otp($id, $otp_input)
     {

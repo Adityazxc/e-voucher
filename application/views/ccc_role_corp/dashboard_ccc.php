@@ -7,78 +7,12 @@
         <div class="form-group col-md-5">
             <label for="dateThru">Thru:</label>
             <input type="date" class="form-control" id="dateThru" name="dateThru" value="<?= date('Y-m-d') ?>">
-        </div>
-        <!-- <div class="form-group col-md-2">                
-                <button type="button" class="btn btn-primary" onclick="filterData()">Filter</button>
-            </div> -->
+        </div>       
     </div>
 </form>
 <div class="row">
     <!-- Filter Form -->
 
-    <!-- Earnings (Monthly) Card Example -->
-    <!-- <div class="col mb-4">
-        <div class="card border-left-success shadow h-100 py-2">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                            Digunakan</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800 totalstatus2"></div>
-                    </div>
-                    <button class="btn btn-default btn-icon" onclick="btnstatus1()">
-                        <div class="col-auto">
-                            <i class="fas fa-calendar fa-2x text-gray-300"></i>
-                        </div>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div> -->
-
-    <!-- Earnings (Monthly) Card Example -->
-    <!-- <div class="col mb-4">
-        <div class="card border-left-info shadow h-100 py-2">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Belum digunakan
-                        </div>
-                        <div class="row no-gutters align-items-center">
-                            <div class="col-auto">
-                                <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800 totalstatus3"></div>
-                            </div>                            
-                        </div>
-                    </div>
-                    <button class="btn btn-default btn-icon" onclick="btnstatus2()">
-                        <div class="col-auto">
-                            <i class="bi bi-send fa-2x text-gray-300"></i>
-                        </div>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div> -->
-
-    <!-- Pending Requests Card Example -->
-    <!-- <div class="col mb-4">
-        <div class="card border-left-warning shadow h-100 py-2">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                            Hangus</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800 totalstatus4"></div>
-                    </div>
-                    <button class="btn btn-default btn-icon" onclick="btnHangus()">
-                        <div class="col-auto">
-                            <i class="fas fa-calendar fa-2x text-gray-300"></i>
-                        </div>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div> -->
     <div class="col-xl-3 col-md-6 mb-4">
         <div class="card border-left-warning shadow h-100 py-2">
             <div class="card-body">
@@ -115,14 +49,14 @@
                     <tr>
                         <th>No</th>
                         <th>Date</th>
-                        <th>AWB no</th>
+                        <th>AWB No</th>
                         <th>Id Customer</th>
                         <th>Customer Name</th>
                         <th>Consignee</th>
                         <th>Qty</th>
                         <th>Weight</th>
-                        <th>Harga</th>
-                        <th>Tanggal Buat</th>
+                        <th>Amount</th>
+                        <th>Create Date</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -144,7 +78,7 @@
     };
 
     // BOX 1 
-    $('.totalstatus5').text('Tunggu.');
+    $('.totalstatus5').text('Rp 0');
     $.ajax({
         url: "<?= base_url('finance_corp/summary_customer') ?>",
         dataType: "JSON",
@@ -157,8 +91,6 @@
         }
     });
 }
-
-
 
     function formatRupiah(angka) {
         var number_string = angka.toString();
