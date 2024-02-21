@@ -15,7 +15,7 @@
         <div class="row">
             <div class="col-md-5 mb-2">
                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addCustomerModal">
-                    Add User
+                  <i class="bi bi-plus-lg"></i> Add User
                 </button>
             </div>
         </div>
@@ -66,8 +66,11 @@
             ],
         });
 
+        setInterval(function(){
+            $('#voucher').DataTable().ajax.reload();
+    
+        },180000);
     });
-
     function detailUsers(id) {
         var encryptedId = encryptFunction(id);
 
@@ -83,12 +86,6 @@
 
         return encodedValue;
     }
-
-    // function detailUsers(id){
-    //     var id_user=id;
-
-    //     console.log(id_user);
-    //     window.location.href = "<?= base_url('admin/detailUsers') ?>?idUser="+id_user;
-    // }
+    
 
 </script>

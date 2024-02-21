@@ -17,14 +17,16 @@ class Finance_corp extends CI_Controller
     public function index()
     {
         $user_role = $this->session->userdata('role');
-        if ($this->session->userdata('logged_in') && ($user_role == 'Finance' || $user_role == 'Admin')) {                
+        if ($this->session->userdata('logged_in') && ($user_role == 'Finance' || $user_role == 'Admin' || $user_role == 'Kacab')) {
             $data['title'] = 'Dashboard Finance';
             $data['page_name'] = 'dashboard_finance';
             if ($user_role == 'Finance') {
                 $data['role'] = 'Finance';
+            } else if ($user_role == 'Kacab') {
+                $data['role'] = 'Kacab';
             } else {
                 $data['role'] = 'Admin';
-            } 
+            }
             $data['voucher_data'] = $this->Customer_model_corp->getVoucherData();
             $this->load->view('dashboard', $data);
         } else {
@@ -65,7 +67,7 @@ class Finance_corp extends CI_Controller
     public function summary_customer()
     {
         // Get the date range from the POST data
-        
+
         $this->db->where('DATE(date) >=', $this->input->post('dateFrom'));
         $this->db->where('DATE(date) <=', $this->input->post('dateThru'));
         $customers_status1 = $this->db->count_all_results('corporate');
@@ -74,7 +76,7 @@ class Finance_corp extends CI_Controller
         $this->db->select('SUM(harga) as totalharga');
         $this->db->where('DATE(date) >=', $this->input->post('dateFrom'));
         $this->db->where('DATE(date) <=', $this->input->post('dateThru'));
-        $customersTotalHarga = $this->db->get('corporate')->row();        
+        $customersTotalHarga = $this->db->get('corporate')->row();
         // Return the total harga as JSON
         echo json_encode([
             'sum_status1' => $customers_status1,

@@ -8,20 +8,17 @@
             <label for="dateThru">Thru:</label>
             <input type="date" class="form-control" id="dateThru" name="dateThru" value="<?= date('Y-m-d') ?>">
         </div>
-        <!-- <div class="form-group col-md-2">                
-                <button type="button" class="btn btn-primary" onclick="filterData()">Filter</button>
-            </div> -->
     </div>
 </form>
 <div class="row">
     <!-- Filter Form -->
     <!-- Earnings (Monthly) Card Example -->
-    <div class="col mb-4">
-        <div class="card border-left-primary shadow h-100 py-2">
+    <div class="col mb-4 hover-effect">
+        <div class="card border-left-success shadow h-100 py-2">
             <div class="card-body">
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
                             Dikirim</div>
                         <div class="h5 mb-0 font-weight-bold text-gray-800 totalEmailDikirim"></div>
                     </div>
@@ -36,18 +33,18 @@
     </div>
 
     <!-- Earnings (Monthly) Card Example -->
-    <div class="col mb-4">
-        <div class="card border-left-success shadow h-100 py-2">
+    <div class="col mb-4 hover-effect">
+        <div class="card border-left-warning shadow h-100 py-2">
             <div class="card-body">
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
                             Belum Dikirim</div>
                         <div class="h5 mb-0 font-weight-bold text-gray-800 totalBelumDikirim"></div>
                     </div>
                     <button class="btn btn-default btn-icon" onclick="btnBelumDikirim()">
                         <div class="col-auto">
-                            <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                            <i class="bi bi-send-dash fa-2x"></i>
                         </div>
                     </button>
                 </div>
@@ -56,22 +53,22 @@
     </div>
 
     <!-- Earnings (Monthly) Card Example -->
-    <div class="col mb-4">
-        <div class="card border-left-info shadow h-100 py-2">
+    <div class="col mb-4 hover-effect">
+        <div class="card border-left-warning shadow h-100 py-2">
             <div class="card-body">
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Belum digunakan
+                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Belum digunakan
                         </div>
                         <div class="row no-gutters align-items-center">
                             <div class="col-auto">
                                 <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800 totalstatus3"></div>
-                            </div>                            
+                            </div>
                         </div>
                     </div>
                     <button class="btn btn-default btn-icon" onclick="btnstatus3()">
                         <div class="col-auto">
-                            <i class="bi bi-send fa-2x text-gray-300"></i>
+                            <i class="bi bi-hourglass-split fa-2x"></i>
                         </div>
                     </button>
                 </div>
@@ -80,36 +77,36 @@
     </div>
 
     <!-- Pending Requests Card Example -->
-    <div class="col mb-4">
-        <div class="card border-left-warning shadow h-100 py-2">
+    <div class="col mb-4 hover-effect">
+        <div class="card border-left-danger shadow h-100 py-2">
             <div class="card-body">
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                        <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
                             Hangus</div>
                         <div class="h5 mb-0 font-weight-bold text-gray-800 totalHangus"></div>
                     </div>
                     <button class="btn btn-default btn-icon" onclick="btnstatus4()">
                         <div class="col-auto">
-                            <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                            <i class="bi bi-x-circle-fill fa-2x"></i>
                         </div>
                     </button>
                 </div>
             </div>
         </div>
     </div>
-    <div class="col mb-4">
-        <div class="card border-left-warning shadow h-100 py-2">
+    <div class="col mb-4 ">
+        <div class="card border-left-primary shadow h-100 py-2">
             <div class="card-body">
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                             Total</div>
                         <div class="h5 mb-0 font-weight-bold text-gray-800 totalPengeluaran"></div>
                     </div>
 
                     <div class="col-auto">
-                        <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                        <i class="bi bi-coin fa-2x"></i>
                     </div>
 
                 </div>
@@ -133,7 +130,7 @@
         <div class="table-responsive">
             <table id="voucher" class="table table-bordered" width="100%" cellspacing="0">
                 <thead>
-                <tr>
+                    <tr>
                         <th>No</th>
                         <th>Shipper Name</th>
                         <th>Email</th>
@@ -208,42 +205,42 @@
     var table;
     var table;
 
-$(document).ready(function () {
-    // datatables
-    table = $('#voucher').DataTable({
-        "processing": true,
-        "serverSide": true,
-        "ajax": {
-            "url": "<?= base_url('marketing/getdatatables_customer') ?>",
-            "type": "POST",
-            "data": function (data) {
-                data.status = $('[name="status"]').val();
-                data.dateFrom = $('[name="dateFrom"]').val();
-                data.dateThru = $('[name="dateThru"]').val();
-            }
-        },
-        "columnDefs": [{
-            "targets": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
-            "orderable": false
-        },
-        {
-            "targets": [0, 1, 2, 3, 4, 5, 6],
-            "className": 'text-center'
-        }],
-        "buttons": [
-            'copy', 'csv', 'excel', 'pdf', 'print'
-        ]
+    $(document).ready(function () {
+        // datatables
+        table = $('#voucher').DataTable({
+            "processing": true,
+            "serverSide": true,
+            "ajax": {
+                "url": "<?= base_url('marketing/getdatatables_customer') ?>",
+                "type": "POST",
+                "data": function (data) {
+                    data.status = $('[name="status"]').val();
+                    data.dateFrom = $('[name="dateFrom"]').val();
+                    data.dateThru = $('[name="dateThru"]').val();
+                }
+            },
+            "columnDefs": [{
+                "targets": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+                "orderable": false
+            },
+            {
+                "targets": [0, 1, 2, 3, 4, 5, 6],
+                "className": 'text-center'
+            }],
+            "buttons": [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ]
+        });
+
+        // Initialize the DataTables Buttons extension
+        new $.fn.dataTable.Buttons(table, {
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ]
+        }).container().appendTo($('.dataTables_length:eq(0)', table.table().container()));
+
+        jumlah();
     });
-
-    // Initialize the DataTables Buttons extension
-    new $.fn.dataTable.Buttons(table, {
-        buttons: [
-            'copy', 'csv', 'excel', 'pdf', 'print'
-        ]
-    }).container().appendTo($('.dataTables_length:eq(0)', table.table().container()));
-
-    jumlah();
-});
 
 
     $('[name="dateFrom"]').on('change', (e) => {

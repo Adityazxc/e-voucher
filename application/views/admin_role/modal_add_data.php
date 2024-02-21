@@ -26,6 +26,7 @@
                             <option value="CS">CS</option>
                             <option value="Finance">Finance</option>
                             <option value="Marketing">Marketing</option>
+                            <option value="Kacab">Kepala Cabang</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -36,12 +37,7 @@
                     <div class="form-group">
                         <label for="accountId">Account Id/Username</label>
                         <input type="text" class="form-control" id="accountId" name="accountId" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="password">Password</label>
-                        <input type="password" class="form-control" id="password" name="password" required>
-                    </div>
-
+                    </div>                 
 
                     <!-- Add more form fields as needed -->
                     <button type="submit" class="btn btn-primary">Add</button>
@@ -65,29 +61,14 @@
                 // Enable the Agent Area field for other roles
                 agentAreaField.prop("disabled", true);
             }
-        }
-        function togglePassword() {
-            var selectedRole = $("#role").val();
-            var agentAreaField = $("#password");
-
-            if (selectedRole !== "Agen") {
-                // Disable the Agent Area field if the role is "Agen"
-                agentAreaField.prop("disabled", false);
-            } else {
-                // Enable the Agent Area field for other roles
-                agentAreaField.prop("disabled", true);
-            }
-        }
+        }   
 
         // Initial state on page load
-        toggleAgentArea();
-        togglePassword()
+        toggleAgentArea();        
 
         // Bind the function to the change event of the Role dropdown
         $("#role").change(function () {
-            toggleAgentArea();
-
-            togglePassword()
+            toggleAgentArea();            
         });
     });
 </script>

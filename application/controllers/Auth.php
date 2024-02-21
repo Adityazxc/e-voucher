@@ -29,6 +29,8 @@ class Auth extends CI_Controller
     {
         $username = $this->input->post('username');
         $password = $this->input->post('password');
+        // Load the user_agent library
+        $this->load->library('user_agent');
 
         $this->db->where('account_number', $username);
         $this->db->where('password', md5($password));
@@ -41,21 +43,23 @@ class Auth extends CI_Controller
             $this->db->where('id_user', $user->id_user);
             $this->db->update('users', array('status_account' => true));
 
-            if ($user->role == "CCC") {
-                $redirect_page = "ccc";
-            } else if ($user->password == "e10adc3949ba59abbe56e057f20f883e" && $user->role == "Agen") {
+            if ($user->password == "e10adc3949ba59abbe56e057f20f883e" && $user->role == "Agen") {
                 $redirect_page = "Agen/reset_password_view";
+            } else if ($user->password == "e10adc3949ba59abbe56e057f20f883e") {
+                $redirect_page = "reset_password";
+            } else if ($user->role == "CCC") {
+                $redirect_page = "ccc";
             } else if ($user->role == "Marketing") {
                 $redirect_page = "marketing";
             } else if ($user->role == "Agen") {
                 $redirect_page = "agen";
-            } else if ($user->role == "Finance") {
+            } else if ($user->role == "Finance" || $user->role == "Kacab") {
                 $redirect_page = "finance";
-            }else if ($user->role == "Admin") {
+            } else if ($user->role == "Admin") {
                 $redirect_page = "admin";
-            } else if ($user->role == "CS" ) {
+            } else if ($user->role == "CS") {
                 $redirect_page = "cs";
-            } else {
+            } else {                
                 redirect("auth");
             }
 
@@ -67,9 +71,12 @@ class Auth extends CI_Controller
                 'password' => $user->password
             );
             $this->session->set_userdata($data_user);
+            $this->load->model('User_log_model');
+            $this->User_log_model->log_user_access($user->id_user, $this->input->ip_address(), $this->agent->platform(), $this->agent->browser());
             redirect($redirect_page);
 
         } else {
+            $this->session->set_flashdata('error_message', 'Username dan Password tidak sesuai!');
             redirect('auth');
         }
 
@@ -77,11 +84,11 @@ class Auth extends CI_Controller
 
     public function logout()
     {
-        $user_id=$this->session->userdata('id_user');
+        $user_id = $this->session->userdata('id_user');
 
-        if($user_id){
-            $this->db->where('id_user',$user_id);
-            $this->db->update('users',array('status_account'=> false));
+        if ($user_id) {
+            $this->db->where('id_user', $user_id);
+            $this->db->update('users', array('status_account' => false));
         }
         $this->session->sess_destroy();
         redirect('auth');

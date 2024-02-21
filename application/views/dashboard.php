@@ -14,6 +14,12 @@
     <?php include 'template/header.php' ?>
 
 </head>
+<style>
+    .hover-effect:hover {
+    transform: translateY(-5px);
+    transition: transform 0.3s ease; /* Menambahkan transisi agar efek lebih halus */
+}
+</style>
 
 <body id="page-top">
 
@@ -70,4 +76,27 @@
 
 <?php include 'template/bottom.php' ?>
 
+<script>
+    var idleTime=0;
+    var logoutTime=1800;
+
+    function countdown(){
+        idleTime++;
+        if(idleTime === logoutTime){
+            alert("Anda telah logout otomatis karena tidak aktif.");
+            window.location.href='<?= base_url("auth/logout")?>';
+        }
+    }
+
+    function resetTimer(){
+        idleTime =0;
+    }
+
+    
+    // Atur timer untuk menghitung mundur
+    var countdownInterval = setInterval(countdown, 1000);
+    
+    document.addEventListener('mousemove',resetTimer);
+    document.addEventListener('keydown',resetTimer);
+</script>
 </html>

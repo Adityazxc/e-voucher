@@ -7,23 +7,23 @@
         <div class="form-group col-md-5">
             <label for="dateThru">Thru:</label>
             <input type="date" class="form-control" id="dateThru" name="dateThru" value="<?= date('Y-m-d') ?>">
-        </div>       
+        </div>
     </div>
 </form>
 <div class="row">
     <!-- Filter Form -->
 
     <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card border-left-warning shadow h-100 py-2">
+        <div class="card border-left-primary shadow h-100 py-2">
             <div class="card-body">
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                             Total</div>
                         <div class="h5 mb-0 font-weight-bold text-gray-800 totalstatus5"></div>
                     </div>
                     <div class="col-auto">
-                        <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                        <i class="bi bi-coin fa-2x text-gray-300"></i>
                     </div>
                 </div>
             </div>
@@ -70,27 +70,27 @@
 <script src="<?= base_url() ?>public/vendor/jquery/jquery.min.js"></script>
 
 <script>
-   var jumlah = () => {
-    var formData = {
-        status: $('#status').val(),
-        dateFrom: $('[name="dateFrom"]').val(),
-        dateThru: $('[name="dateThru"]').val(),
-    };
+    var jumlah = () => {
+        var formData = {
+            status: $('#status').val(),
+            dateFrom: $('[name="dateFrom"]').val(),
+            dateThru: $('[name="dateThru"]').val(),
+        };
 
-    // BOX 1 
-    $('.totalstatus5').text('Rp 0');
-    $.ajax({
-        url: "<?= base_url('finance_corp/summary_customer') ?>",
-        dataType: "JSON",
-        type: "POST",
-        data: formData,
-        success: (r) => {
-            // BOX 1                 
-            var formattedTotal = formatRupiah(r.sum_totalharga);
-            $('.totalstatus5').text(formattedTotal);
-        }
-    });
-}
+        // BOX 1 
+        $('.totalstatus5').text('Rp 0');
+        $.ajax({
+            url: "<?= base_url('finance_corp/summary_customer') ?>",
+            dataType: "JSON",
+            type: "POST",
+            data: formData,
+            success: (r) => {
+                // BOX 1                 
+                var formattedTotal = formatRupiah(r.sum_totalharga);
+                $('.totalstatus5').text(formattedTotal);
+            }
+        });
+    }
 
     function formatRupiah(angka) {
         var number_string = angka.toString();

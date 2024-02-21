@@ -8,16 +8,18 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form class="form-horizontal" id='addCustomer' action="<?php echo base_url('ccc/add_data');?>" method="post" enctype="multipart/form-data"
-                role="form">
+            <form class="form-horizontal" id='addCustomer' action="<?php echo base_url('ccc/add_data'); ?>" method="post"
+                enctype="multipart/form-data" role="form">
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="customerName">Name Pengirim:</label>
-                        <input type="text" class="form-control" id="customerName" oninput="this.value = this.value.toUpperCase()" name="customerName" required>
-                    </div>                             
+                        <input type="text" class="form-control" id="customerName"
+                            oninput="this.value = this.value.toUpperCase()" name="customerName" required>
+                    </div>
                     <div class="form-group">
                         <label for="awb_no">No Awb:</label>
-                        <input type="text" maxlength="16" class="form-control" pattern="[A-Za-z0-9]{16}" id="awb_no" title="Please enter a 16-character alphanumeric code" name="awb_no" required>
+                        <input type="text" maxlength="16" class="form-control" pattern="[A-Za-z0-9]{16}" id="awb_no"
+                            title="Please enter a 16-character alphanumeric code" name="awb_no" required>
 
                     </div>
                     <div class="form-group">
@@ -31,7 +33,7 @@
                     <div class="form-group">
                         <label for="ongkir">Harga Ongkir</label>
                         <input type="number" class="form-control" id="ongkir" name="ongkir" required>
-                    </div>              
+                    </div>
                     <div class="form-group">
                         <label for="service">Service</label>
                         <select class="form-control" id="service" name="service" required>
@@ -42,7 +44,10 @@
 
 
                     <!-- Add more form fields as needed -->
-                    <button type="submit" class="btn btn-primary">Add</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-plus-lg"></i>
+                        Add Customer
+                    </button>
             </form>
         </div>
     </div>
@@ -52,7 +57,7 @@
 
 
 <!-- format rupiah -->
- <!-- <script type="text/javascript">
+<!-- <script type="text/javascript">
 var rupiah = document.getElementById('ongkir');
 rupiah.addEventListener('keyup', function(e) {
     // tambahkan 'Rp.' pada saat form di ketik
@@ -78,4 +83,3 @@ function formatRupiah(angka, prefix) {
     return prefix == undefined ? rupiah : (rupiah ? 'Rp. ' + rupiah : '');
 }
 </script>  -->
-

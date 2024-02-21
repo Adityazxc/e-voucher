@@ -15,10 +15,30 @@ class Admin extends CI_Controller
 
     public function index()
     {
-        if ($this->session->userdata('logged_in') && $this->session->userdata('role') == 'Admin') {
+        if ($this->session->userdata('logged_in') &&( $this->session->userdata('role') == 'Admin'|| $this->session->userdata('role') == 'Kacab')){
             $data['title'] = 'Dashboard Admin';
             $data['page_name'] = 'dashboard_admin';
-            $data['role'] = 'Admin';
+            if ( $this->session->userdata('role') == 'Admin'){
+                $data['role'] = 'Admin';
+            }else{
+                $data['role'] = 'Kacab';
+            }
+            $this->load->view('dashboard', $data);
+        } else {
+            redirect('auth');
+        }
+
+    }
+    public function user_log()
+    {
+        if ($this->session->userdata('logged_in') &&( $this->session->userdata('role') == 'Admin'|| $this->session->userdata('role') == 'Kacab')){
+            $data['title'] = 'Dashboard Admin';
+            $data['page_name'] = 'user_log';
+            if ( $this->session->userdata('role') == 'Admin'){
+                $data['role'] = 'Admin';
+            }else{
+                $data['role'] = 'Kacab';
+            }
             $this->load->view('dashboard', $data);
         } else {
             redirect('auth');
@@ -38,6 +58,33 @@ class Admin extends CI_Controller
         $this->load->view('dashboard', $data);
     }
 
+    public function view_users_logs()
+    {
+        $list = $this->Admin_model->getdatatables_user();                    
+
+        $data = array();
+        $no = @$_POST['start'];
+        foreach ($list as $item) {
+
+            $no++;
+            $row = array();
+            $row[] = '<small style="font-size:12px">' . $no . '</small>';
+            $row[] = '<small style="font-size:12px">' . $item->account_name . '</small>';
+            $row[] = '<small style="font-size:12px">' . $item->role . '</small>';
+            $row[] = '<small style="font-size:12px">' . $item->ip_address . '</small>';
+            $row[] = '<small style="font-size:12px">' . $item->os . '</small>';
+            $row[] = '<small style="font-size:12px">' . $item->browser . '</small>';
+            $row[] = '<small style="font-size:12px">' . $item->login_time . '</small>';                                
+            $data[] = $row;
+        }
+        $output = array(
+            "draw" => @$_POST['draw'],
+            "recordsTotal" => $this->Admin_model->count_all_user(),
+            "recordsFiltered" => $this->Admin_model->count_filtered_user(),
+            "data" => $data,
+        );
+        echo json_encode($output);
+    }
     public function view_users()
     {
         $list = $this->Admin_model->getdatatables_customer();
@@ -87,18 +134,14 @@ class Admin extends CI_Controller
         redirect("admin");
     }
 
-    public function add_user(){
-        $password=$this->input->post('password');
+    public function add_user(){        
         $user_data = array(
             'account_name' => $this->input->post('accountName'),
             'agent_area' => $this->input->post('agentArea'),
             'account_number' => $this->input->post('accountId'),
             'role' => $this->input->post('role'),                                    
-        );
-        if($password === null){
-            $user_data['password']=md5("123456");
-        }        
-        $user_data['password']=md5($password);
+        );              
+        $user_data['password']=md5("123456");
         $user_data["agent_status"] ="Y";
         $user_data["status_account"] =0;
         $add_user=$this->User_model->add_user_model($user_data);

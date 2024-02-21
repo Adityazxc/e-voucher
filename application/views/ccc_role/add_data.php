@@ -7,10 +7,7 @@
         <div class="form-group col-md-5">
             <label for="dateThru">Thru:</label>
             <input type="date" class="form-control" id="dateThru" name="dateThru" value="<?= date('Y-m-d') ?>">
-        </div>
-        <!-- <div class="form-group col-md-2">                
-                <button type="button" class="btn btn-primary" onclick="filterData()">Filter</button>
-            </div> -->
+        </div> 
     </div>
 </form>
 
@@ -28,7 +25,7 @@
                 <div class="card-subtitile">Details and history</div>
             </div>
             <div class="me-4">
-                <button type="button" class="btn btn-success" onclick="downloadTemplate()">Download Template</button>
+                <button type="button" class="btn btn-success" onclick="downloadTemplate()"><i class="bi bi-download"></i> Download Template</button>
             </div>
         </div>
     </div>
@@ -39,14 +36,18 @@
             <div class="row">
                 <div class="col-md-5 mb-2">
                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addCustomerModal">
-                        Add Customer
+                    <i class="bi bi-plus-lg"></i> 
+                    Add Customer
                     </button>
                 </div>
                 <div class="col-md-3 mb-2">
                     <input type="file" class="form-control" name="excel_file" id="excel_file" required>
                 </div>
                 <div class="col-md-4 mb-2">
-                    <button type="submit" class="btn btn-primary">Import Data</button>
+                    <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-file-import"></i>
+                    Import Data
+                    </button>
                 </div>
             </div>
         </form>

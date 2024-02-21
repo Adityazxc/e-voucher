@@ -32,7 +32,7 @@
         <form action="<?= base_url('marketing/test_checkbox')?>" method="POST">
         <div class="mb-3">
             <button type="submit" class="btn btn-primary" id="getSelectedEmails" data-email="example@email.com">
-                Kirim Email</button>
+            <i class="bi bi-send"></i> Kirim Email</button>
         </div>
         <div class="table-responsive">
             <table id="voucher" class="table table-bordered" width="100%" cellspacing="0">

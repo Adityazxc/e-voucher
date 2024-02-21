@@ -8,9 +8,6 @@
             <label for="dateThru">Thru:</label>
             <input type="date" class="form-control" id="dateThru" name="dateThru" value="<?= date('Y-m-d') ?>">
         </div>
-        <!-- <div class="form-group col-md-2">                
-                <button type="button" class="btn btn-primary" onclick="filterData()">Filter</button>
-            </div> -->
     </div>
 </form>
 
@@ -93,27 +90,6 @@
             ]
         });
 
-        // checkbox
-        $('#selectAll').change(function () {
-            var checked = $(this).prop('checked');
-            $('input:checkbox.data-check').prop('checked', checked);
-        });
-
-        // Tambahkan ini untuk menangani checkbox all
-        $('#voucher tbody').on('change', 'input:checkbox.data-check', function () {
-            $('#selectAll').prop('checked', false);
-        });
-        // end checkbox
-
-        $(document).on('click', '#getSelectedEmails', function () {
-            var selectedEmails = getSelectedEmails();
-
-            if (selectedEmails.length > 0) {
-                sendEmails(selectedEmails);
-            } else {
-                alert('Tidak ada email yang dipilih.');
-            }
-        });
 
         // datefrom and date thru
         $('[name="dateFrom"]').on('change', (e) => {
@@ -132,13 +108,9 @@
 </script>
 
 <script>
-    function editEmail(id) {
-        // Fetch the ID and name of the selected customer
-        var customerId = id;
-
-        console.log(customerId);
-        // Redirect to the edit_email_page with customerId as a query parameter
-        window.location.href = "<?= base_url('cs/edit_send_email') ?>?customerId=" + customerId;
+    function editEmail(id, username) {        
+        $('#ModalLabel').text('Input Email ' + username);        
+        $('#customerID').val(id);
     }
 
 
@@ -149,39 +121,21 @@
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="ModalLabel">Edit</h5>
+                <h5 class="modal-title" id="ModalLabel"></h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form action="<?= base_url('ccc') ?>" method="POST" enctype="multipart/form-data">
+            <form action="<?= base_url('cs/update_email') ?>" method="POST" enctype="multipart/form-data">
                 <div class="modal-body">
-                    <div class="ModaleditForm row"></div>
+                    <input type="hidden" id="customerID" name="customerID">
+                    <input type="email" class="form-control" name="newEmail" id="newEmail" placeholder="Input Email"
+                        required>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary col-md-3" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary col-md-3">Simpan</button>
+                    <button type="submit" class="btn btn-primary col-md-3">Send Email</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
-<script type="text/javascript">
-    $(document).ready(function () {
-        $('#ModalEditEmail').on('show.bs.modal', function (e) {
-            var id = $(e.relatedTarget).data('id');
-            //menggunakan fungsi ajax untuk pengambilan data
-            $.ajax({
-                type: 'post',
-                url: '<?= base_url('ccc/modaledit') ?>',
-                data: {
-                    id: id,
-                },
-                success: function (data) {
-                    $('.ModaleditForm').html(data); //menampilkan data ke dalam modal
-                }
-            });
-        });
-
-    });
-</script>

@@ -53,36 +53,14 @@ class Cs extends CI_Controller
         } else {
             echo "404";
         }
-    }
-    public function edit_send_email()
-    {
-        $customerId = $this->input->get('customerId');
-        $data['title'] = 'Dashboard CS';
-        $data['page_name'] = 'edit_email';
-        $data['role'] = 'CS';
-        $data['customerId'] = $customerId;
-        $data['voucher_data'] = $this->Customer_model->getVoucherData();
-        $this->load->view('dashboard', $data);
-    }
-
-
+    }   
     public function search_customer()
     {
         $this->load->model('Customer_model');
-
-        // Mendapatkan kata kunci pencarian dari formulir atau input pengguna
         $keyword = $this->input->post('search_keyword');
-
-        // Memanggil metode searchCustomer dari model
         $search_result = $this->Customer_model->searchCustomer($keyword);
-
-        // Menyimpan hasil pencarian ke dalam data yang akan dikirim ke view
         $data['search_result'] = $search_result;
-
-        // Menyimpan kata kunci pencarian untuk ditampilkan kembali di form
         $data['search_keyword'] = $keyword;
-
-        // Memanggil fungsi redeem() dan menyertakan data hasil pencarian
         $this->redeem($data);
     }
 
@@ -100,7 +78,7 @@ class Cs extends CI_Controller
 
     public function getdatatables_send_email()
     {
-        $list = $this->Cs_model->getdatatables_marketing();        
+        $list = $this->Cs_model->getdatatables_marketing();
 
         $data = array();
         $no = @$_POST['start'];
@@ -120,7 +98,8 @@ class Cs extends CI_Controller
             $row[] = '<small style="font-size:12px">' . $no . '</small>';
             $row[] = '<small style="font-size:12px">' . $item->customer_name . '</small>';
             if ($item->email == null) {
-                $row[] = '<button type="button" class="btn btn-sm btn-info" onclick="editEmail(' . $item->id . ', \'' . $item->email . '\')">Edit</button>';                
+                // $row[] = '<button type="button" class="btn btn-sm btn-warning" onclick="editEmail(' . $item->id . ', \'' . $item->email . '\')"> <i class="bi bi-pencil "></i> Edit</button>';                
+                $row[] = '<button type="button" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#ModalEditEmail" onclick="editEmail(' . $item->id . ',\'' . $item->customer_name . '\')"> <i class="bi bi-pencil "></i> Edit</button>';
             } else {
                 $row[] = '<small style="font-size:12px">' . $item->email . '</small>';
             }
@@ -186,9 +165,9 @@ class Cs extends CI_Controller
     }
     public function update_email()
     {
-        $customerId = $this->input->post('customerId');
-        $newEmail = $this->input->post('newEmail');
-        if ($this->Cs_model->update_email_model($customerId, $newEmail)) {
+        $customerId = $this->input->post('customerID');
+        $email = $this->input->post('newEmail');
+        if ($this->Cs_model->update_email_model($customerId, $email)) {
             $customers = $this->db->get_where('customers', ['id' => $customerId]);
             $this->db->where('id', $customerId);
             $this->db->update('customers', ['status_email' => 'Y']);
@@ -211,9 +190,8 @@ class Cs extends CI_Controller
         }
 
         redirect("cs/send_email");
-
+        
     }
-
 
     public function getdatatables_email_null()
     {

@@ -36,7 +36,7 @@ if ($this->session->flashdata('error_message')) {
                 <div class="card-subtitile">Details and history</div>
             </div>
             <div class="me-4">
-                <button type="button" class="btn btn-success" onclick="downloadTemplate()">Download Template</button>
+                <button type="button" class="btn btn-success" onclick="downloadTemplate()"><i class="bi bi-download"></i>Download Template</button>
             </div>
 
         </div>
@@ -55,7 +55,7 @@ if ($this->session->flashdata('error_message')) {
                     <input type="file" class="form-control" name="excel_file" id="excel_file" required>
                 </div>
                 <div class="col-md-4 mb-2">
-                    <button type="submit" class="btn btn-primary">Import Data</button>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-file-import"></i> Import Data</button>
                 </div>
             </div>
         </form>

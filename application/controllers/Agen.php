@@ -30,7 +30,7 @@ class Agen extends CI_Controller
             $id_user = $this->session->userdata('id_user');
             $data['voucher_data'] = $this->Customer_model->getVoucherData();
             $this->load->view('dashboard', $data);
-            // echo "ID User: " . $id_user;
+
         } else {
             redirect('auth');
         }
@@ -61,7 +61,6 @@ class Agen extends CI_Controller
             $this->session->set_flashdata('error_message', 'Password gagal di rubah');
         }
 
-        // redirect('auth');
     }
 
 
@@ -138,14 +137,11 @@ class Agen extends CI_Controller
     }
 
 
-   
+
 
     public function validate_otp($id, $otp_input)
     {
-        // $id = $this->input->post('id');
-        // $otp_input = $this->input->post('otp_input');
 
-        // Ambil OTP dari database
         $this->db->select('otp');
         $this->db->where('id', $id);
         $query = $this->db->get('customers');
@@ -159,30 +155,6 @@ class Agen extends CI_Controller
         }
     }
 
-    // Customer_model.php
-    // public function validate_otp($id, $otp_input)
-    // {
-    //     // Ambil OTP dari database
-    //     $this->db->select('otp');
-    //     $this->db->where('id', $id);
-    //     $query = $this->db->get('customers');
-    //     $result = $query->row();
-
-    //     // Validasi OTP
-    //     return ($result && $result->otp == $otp_input);
-    // }
-
-    // public function reedem_voucher()
-    // {                     
-    //     $reedem_voucher = $this->customer_model->reedem_voucher();
-    //     if($reedem_voucher == true){            
-    //         $this->session->set_flashdata('success', 'Data berhasil disimpan');    
-    //         redirect(base_url('agen/search_customer'));
-    //     }else {
-    //         $this->session->set_flashdata('error', 'Gagal redeem voucher');
-    //         redirect(base_url('agen/search_customer'));
-    //     }
-    // }
 
 
     public function session()
